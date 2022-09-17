@@ -1,0 +1,343 @@
+@use '../../colors.scss' as colors;
+@use '../../variables.scss' as variables;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css2?family=Manrope&display=swap');
+
+$main-padding: 12px;
+
+.Home {
+
+  .infographic {
+    background-color: colors.$cyan;
+    display: flex;
+    padding-top: 64px;
+
+    .file-upload {
+      background-color: colors.$light-grey;
+      padding: 2*$main-padding;
+      width: calc(100% - 525px);
+      margin-bottom: 4*$main-padding;
+
+      @media screen and (max-width: variables.$medium) {
+        width: calc(100% - 24px);
+        padding: $main-padding;
+        margin-bottom: 0;
+      }
+
+      @media screen and (max-width: variables.$small) {
+        width: calc(100% - 24px);
+        padding: $main-padding;
+        margin-bottom: 0;
+      }
+
+      .info-h1 {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 800;
+        font-size: 28px;
+        line-height: 52px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: colors.$cyan;
+        text-align: left;
+        margin: 2*$main-padding;
+
+        @media screen and (max-width: variables.$medium) {
+          margin: 2*$main-padding;
+        }
+      }
+
+      .info-h2 {
+        margin: 2*$main-padding;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 26px;
+        letter-spacing: 0.02em;
+        text-align: left;
+        color: colors.$black;
+      }
+
+      .input-title {
+        margin: 2*$main-padding;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 26px;
+        text-align: left;
+        letter-spacing: 0.02em;
+
+        color: colors.$grey;
+      }
+
+      .dropdown {
+        margin: 2*$main-padding;
+        text-align: left;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+        width: calc(100% - 4*$main-padding);
+      }
+
+      .drop-area {
+        background: colors.$pure-white;
+        border-radius: 2px;
+        padding: 60px;
+        margin: 2*$main-padding;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+
+      .blue {
+        display: inline;
+        color: colors.$light-blue;
+      }
+
+      .tc {
+        margin: 2*$main-padding;
+        text-align: left;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      padding-right: $main-padding;
+      width: 450px;
+      float: right;
+      align-items: flex-end;
+      padding-top: 4*$main-padding;
+
+      @media screen and (max-width: variables.$medium) {
+        display: none;
+      }
+    }
+  }
+
+  .process {
+
+    background-color: #F7F9F8;
+    padding: 2*$main-padding;
+
+    .title {
+      text-align: left;
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 48px;
+      /* identical to box height, or 150% */
+
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-feature-settings: 'liga' off;
+
+      color: #333333;
+
+      margin: 2*$main-padding;
+    }
+
+    .steps {
+
+      display: flex;
+      margin: 2*$main-padding;
+      flex-wrap: wrap;
+
+      .step {
+        text-align: left;
+        width: 25%;
+
+        @media screen and (max-width: variables.$medium) {
+          width: 50%;
+        }
+
+        @media screen and (max-width: variables.$small) {
+          width: 100%;
+        }
+
+        .process-img {
+          margin: $main-padding;
+          width: 100%;
+        }
+
+        .title2 {
+          margin: $main-padding;
+          font-family: 'Open Sans';
+          font-style: normal;
+          font-weight: 600;
+          font-size: 20px;
+          line-height: 30px;
+          /* identical to box height, or 150% */
+
+          font-feature-settings: 'liga' off;
+
+          /* Text / Gray 900 */
+
+          color: #18191F;
+        }
+
+        .text {
+          margin: $main-padding;
+          font-family: 'Open Sans';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 26px;
+          /* identical to box height, or 162% */
+
+          font-feature-settings: 'liga' off;
+
+          /* Text / Gray 900 */
+
+          color: #18191F;
+        }
+      }
+    }
+  }
+
+  .info-block {
+    display: flex;
+    background-color: #FCFCFC;
+    margin: 2*$main-padding;
+    align-items: center;
+    text-align: left;
+
+    .title {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 52px;
+      /* or 162% */
+
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-feature-settings: 'liga' off;
+
+      color: #333333;
+
+      margin: 2*$main-padding;
+    }
+
+    .desc {
+
+      font-family: 'Manrope';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 32px;
+      /* or 178% */
+
+      font-feature-settings: 'liga' off;
+
+      color: #333333;
+
+      margin: 2*$main-padding;
+    }
+  }
+
+  .logos {
+    margin: 2*$main-padding;
+
+    @media screen and (max-width: variables.$medium) {
+      display: none;
+    }
+  }
+
+  .feature-block {
+
+    background-color: #F7F9F8;
+
+    .main-title {
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 700;
+      font-size: 32px;
+      line-height: 52px;
+      /* identical to box height, or 162% */
+
+      text-align: center;
+      text-transform: uppercase;
+      font-feature-settings: 'liga' off;
+
+      color: #333333;
+      margin: 2*$main-padding;
+      padding-top: 2*$main-padding;
+    }
+
+    .main-desc {
+      margin: 2*$main-padding;
+      font-family: 'Manrope';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 32px;
+      /* or 178% */
+
+      text-align: center;
+      font-feature-settings: 'liga' off;
+
+      color: #333333;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+
+      .feature {
+        width: 33%;
+        @media screen and (max-width: variables.$medium) {
+          width: 50%;
+        }
+        .feature-img {
+          margin: $main-padding;
+        }
+
+        .title {
+          margin: $main-padding;
+          font-family: 'Manrope';
+          font-style: normal;
+          font-weight: 600;
+          font-size: 24px;
+          line-height: 32px;
+          /* identical to box height, or 133% */
+
+          text-align: center;
+          font-feature-settings: 'liga' off;
+
+          color: #333333;
+        }
+
+        .text {
+          margin: $main-padding;
+          font-family: 'Manrope';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 26px;
+          /* or 162% */
+
+          text-align: center;
+          font-feature-settings: 'liga' off;
+
+          color: #333333;
+        }
+      }
+    }
+  }
+
+}

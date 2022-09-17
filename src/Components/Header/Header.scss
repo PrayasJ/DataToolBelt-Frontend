@@ -1,0 +1,100 @@
+@use '../../colors.scss' as colors;
+@use '../../variables.scss' as variables;
+
+.header {
+  display: flex;
+  position: fixed;
+  justify-content: space-between;
+  width: 100vw;
+  z-index: 99;
+  font-family: Inter;
+  font-style: normal;
+  background-color: colors.$light-grey;
+
+  .logo {
+    margin: 16px;
+
+    &.full {
+      display: block;
+
+      @media screen and (max-width: variables.$medium) {
+        display: none;
+      }
+
+      @media screen and (max-width: variables.$small) {
+        display: block;
+      }
+  
+    }
+  
+    &.small {
+      display: none;
+
+      @media screen and (max-width: variables.$medium) {
+        display: block;
+      }
+
+      @media screen and (max-width: variables.$small) {
+        display: none;
+      }
+    }
+  }
+
+  .menu {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    padding-right: 48px;
+    padding-left: 54px;
+
+    &.full{
+      display: flex;
+      background-color: colors.$cyan;
+
+      @media screen and (max-width: variables.$small) {
+        display: none;
+      }
+
+      @media screen and (max-width: variables.$medium) {
+        background-color: transparent;
+      }
+    }
+
+    &.small{
+      display: none;
+      @media screen and (max-width: variables.$small) {
+        display: flex;
+      }
+    }
+
+    .item {
+      padding: 6px;
+      color: colors.$text-white;
+
+
+      @media screen and (max-width: variables.$medium) {
+        color: colors.$black;
+      }
+    }
+
+    .gap{
+      width: 12px;
+    }
+  }
+  .white {
+    background-color: colors.$white;
+    border-radius: 4px;
+
+    @media screen and (max-width: variables.$medium) {
+      background-color: colors.$cyan;
+    }
+    &.item {
+      padding: 12px;
+      color: colors.$cyan;
+      @media screen and (max-width: variables.$medium) {
+        color: colors.$text-white;
+      }
+    }
+  }
+
+}
