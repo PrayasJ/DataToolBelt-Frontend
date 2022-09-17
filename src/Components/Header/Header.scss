@@ -1,6 +1,8 @@
 @use '../../colors.scss' as colors;
 @use '../../variables.scss' as variables;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
 .header {
   display: flex;
   position: fixed;

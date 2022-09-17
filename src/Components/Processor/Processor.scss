@@ -1,0 +1,60 @@
+@use '../../colors.scss' as colors;
+@use '../../variables.scss' as variables;
+
+$main-padding: 12px;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+.processor {
+	background: #F7F9F8;
+	display: flex;
+	height: 100vh;
+	display: flex;
+	justify-content: space-between;
+
+	.title-bar {
+		display: flex;
+		justify-content: space-between;
+		margin: 4*$main-padding;
+		width: 100%;
+
+		.title {
+
+			font-family: 'Inter';
+			font-style: normal;
+			font-weight: 700;
+			font-size: 26px;
+			line-height: 31px;
+
+			color: #3A3A3A;
+		}
+
+		.task-bar {
+			display: flex;
+			justify-content: space-between;
+
+			.task-name {
+				font-family: 'Inter';
+				font-style: normal;
+				font-weight: 700;
+				font-size: 26px;
+				line-height: 31px;
+
+				color: #3A3A3A;
+
+				margin-right: 2*$main-padding;
+			}
+
+			.task-id {
+				font-family: 'Inter';
+				font-style: normal;
+				font-weight: 500;
+				font-size: 26px;
+				line-height: 31px;
+
+				color: #6F6F76;
+
+			}
+		}
+	}
+}

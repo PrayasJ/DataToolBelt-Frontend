@@ -16,7 +16,7 @@ $main-padding: 12px;
     .file-upload {
       background-color: colors.$light-grey;
       padding: 2*$main-padding;
-      width: calc(100% - 525px);
+      width: calc(100% - 522px);
       margin-bottom: 4*$main-padding;
 
       @media screen and (max-width: variables.$medium) {
@@ -84,21 +84,71 @@ $main-padding: 12px;
         width: calc(100% - 4*$main-padding);
       }
 
-      .drop-area {
+      .file-info {
+        display: flex;
+        justify-content: space-between;
         background: colors.$pure-white;
         border-radius: 2px;
-        padding: 60px;
+        align-items: center;
+        padding: 2*$main-padding;
+        margin: 2*$main-padding;
+        display: flex;
+        background: colors.$pure-white;
+        border-radius: 2px;
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+        outline: colors.$black;
+        outline-style: dashed;
+        cursor: pointer;
+      }
+
+      .remove-btn {
+        font-size: 2em;
+        color: colors.$red;
+      }
+
+      .drop-drag {
+        font-size: 1.5em;
+      }
+
+      .drop-area {
+        display: flex;
+        background: colors.$pure-white;
+        border-radius: 2px;
+        align-items: center;
+        justify-content: center;
+        height: 150px;
         margin: 2*$main-padding;
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 400;
         font-size: 14px;
         line-height: 21px;
+        outline: colors.$black;
+        outline-style: dashed;
+        cursor: pointer;
+
+        &.drag {
+          background-color: colors.$grey;
+        }
       }
 
       .blue {
         display: inline;
         color: colors.$light-blue;
+      }
+
+      .submit-btn {
+        background-color: colors.$cyan;
+        border-radius: 4px;
+        color: colors.$white;
+        font-size: 1.15em;
+        font-weight: 700;
+        padding: 1.5*$main-padding;
+        margin: 2*$main-padding;
       }
 
       .tc {
@@ -300,9 +350,11 @@ $main-padding: 12px;
 
       .feature {
         width: 33%;
+
         @media screen and (max-width: variables.$medium) {
           width: 50%;
         }
+
         .feature-img {
           margin: $main-padding;
         }

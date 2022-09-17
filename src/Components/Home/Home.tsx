@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react'
 import './Home.scss';
 import Select from 'react-select';
 import info from '../../Images/info.png'
@@ -12,6 +12,12 @@ import convert from '../../Images/convert.svg'
 import visualize from '../../Images/visualize.svg'
 
 import { BsPlusLg } from 'react-icons/bs'
+import { MdRemoveCircle } from 'react-icons/md'
+
+import { useDropzone } from 'react-dropzone'
+import Header from '../Header/Header';
+
+//Features on our platform with their image links
 
 interface Features {
   name: string;
@@ -53,6 +59,7 @@ const features: Features[] = [
   }
 ]
 
+//Used to display the UI steps to DTB
 interface Steps {
   title: string;
   text: string;
@@ -77,9 +84,49 @@ const steps: Steps[] = [
   }
 ]
 
+let bytesToHuman = (size: number) => {
+  let i = Math.floor(Math.log(size) / Math.log(1024))
+  return Number((size / Math.pow(1024, i)).toFixed(2)).toString() + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+}
+
 function Home() {
+
+  //Function Declaration for file drag and drop hook
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    if (acceptedFiles.length > 1) return
+    console.log(acceptedFiles[0])
+    setFiles(acceptedFiles[0])
+  }, [])
+
+  //remove selected file
+  const removeFile = () => {
+    setFiles(undefined)
+  }
+
+  //select Feature
+
+  const onFeatureSelect = (e:any) => {
+
+    setFeature(e == null ? undefined : e)
+  }
+
+  //Validate Inputs
+
+  const validateInputs = () => {
+    return featureSelected && file
+  }
+
+  //Variable declaration
+
+  const [file, setFiles] = useState<File>();
+  const [featureSelected, setFeature] = useState<Features>(features[4]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
   return (
     <div className="Home">
+      <Header />
       <div className='infographic'>
         <div className='file-upload'>
           <div className='info-h1'>
@@ -98,15 +145,39 @@ function Home() {
             isClearable={true}
             backspaceRemovesValue={true}
             className='dropdown'
+            defaultValue={features[4]}
+            onChange={onFeatureSelect}
           />
 
           <div className='input-title'>
             Upload File
           </div>
-          <div className='drop-area'>
-            <BsPlusLg fontSize={"2em"} /><br /><br />
-            Drag & Drop or <div className='blue'>Browse</div>
-          </div>
+          {file ?
+            <div className='file-info' onClick={removeFile}>
+              {file.name + ' - ' + bytesToHuman(file.size)}
+              <MdRemoveCircle className='remove-btn'/>
+            </div> :
+            <div className={`drop-area ${isDragActive ? 'drag' : ''}`} {...getRootProps()}>
+              <input {...getInputProps()} />
+              {
+                isDragActive ?
+                  <div className='drop-drag'>
+                    Drop the files here ...
+                  </div>
+                  :
+                  <div >
+                    <BsPlusLg fontSize={"2em"} /><br /><br />
+                    Drag & Drop or <div className='blue'>Browse</div>
+                  </div>
+              }
+            </div>
+          }
+
+          {validateInputs() && 
+          <div className='submit-btn'>
+            Submit
+          </div>}
+
           <div className='tc'>
             By using Data Tool Belt you agree to our <a className='blue'>Terms of Service</a> and <a className='blue'>Privacy Policy</a>.
           </div>
@@ -120,9 +191,9 @@ function Home() {
           The process we follow
         </div>
         <div className='steps'>
-          {(steps.map((step) => {
+          {(steps.map((step, index) => {
             return (
-              <div className='step'>
+              <div className='step' key={step.title + index}>
                 <img src={process_img} className='process-img' />
                 <div className='title2'>
                   {step.title}
@@ -144,19 +215,19 @@ function Home() {
             Data Tool Belt offers a feature to import any type of data files in all famous format. Moreover you can perform all type of operations with any type of data file in all famous format.
           </div>
         </div>
-        <img className='logos' src={logos}/>
+        <img className='logos' src={logos} />
       </div>
       <div className='feature-block'>
         <div className='main-title'>
-        Tailor-made features
+          Tailor-made features
         </div>
         <div className='main-desc'>
-        Data Tool Belt offer the best-in-class feature to its best-in-class users. All Features are crafted to fullfill all needs of the users.
-          </div>
-          <div className='features'>
+          Data Tool Belt offer the best-in-class feature to its best-in-class users. All Features are crafted to fullfill all needs of the users.
+        </div>
+        <div className='features'>
           {(features.map((feature) => {
             return (
-              <div className='feature'>
+              <div className='feature' key={feature.key}>
                 <img src={feature.src} className='feature-img' />
                 <div className='title'>
                   {feature.name}
@@ -167,7 +238,7 @@ function Home() {
               </div>
             )
           }))}
-          </div>
+        </div>
       </div>
     </div>
   );

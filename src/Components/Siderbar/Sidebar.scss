@@ -1,0 +1,172 @@
+@use '../../colors.scss' as colors;
+@use '../../variables.scss' as variables;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+$main-padding: 12px;
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	z-index: 99;
+	font-family: Inter;
+	font-style: normal;
+	height: 100%;
+	background-color: white;
+
+	.logo {
+		background-color: colors.$cyan;
+		padding: 32px;
+		height: fit-content;
+
+		&.full {
+			display: block;
+
+			@media screen and (max-width: variables.$medium) {
+				display: none;
+			}
+
+			@media screen and (max-width: variables.$small) {
+				display: block;
+			}
+
+		}
+
+		&.small {
+			display: none;
+
+			@media screen and (max-width: variables.$medium) {
+				display: block;
+			}
+
+			@media screen and (max-width: variables.$small) {
+				display: none;
+			}
+		}
+	}
+
+	.info-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-evenly;
+		text-align: left;
+		height: calc(100vh - 100px);
+
+		.title {
+			font-family: 'Inter';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 19px;
+
+			color: #3A3A3A;
+
+			margin: 2*$main-padding;
+			margin-top: 4*$main-padding;
+			margin-bottom: 0.25 * $main-padding;
+		}
+
+		.info {
+			font-family: 'Inter';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 17px;
+
+			color: #6F6F76;
+			margin: 2*$main-padding;
+			margin-top: 0;
+			margin-bottom: 0;
+
+		}
+
+		.info-container2 {
+			display: flex;
+			flex-wrap: wrap;
+			margin-left: 2*$main-padding;
+			margin-top: 2*$main-padding;
+
+			.info-block {
+				display: block;
+				width: 50%;
+
+				.title2 {
+					margin: 0.5*$main-padding;
+					margin-left: 0;
+
+					font-family: 'Inter';
+					font-style: normal;
+					font-weight: 400;
+					font-size: 12px;
+					line-height: 150%;
+					/* identical to box height, or 18px */
+
+
+					color: #6F6F76;
+				}
+
+				.info2 {
+					margin: 0.5*$main-padding;
+					margin-left: 0;
+
+					font-family: 'Inter';
+					font-style: normal;
+					font-weight: 500;
+					font-size: 14px;
+					line-height: 150%;
+					/* identical to box height, or 21px */
+
+
+					color: #3A3A3A;
+				}
+			}
+
+		}
+
+		.table {
+			padding: 2*$main-padding;
+			margin-bottom: 2*$main-padding;
+			height: 100%;
+
+			.table-container {
+				.data-table {
+					border-radius: 4px;
+					width: 100%;
+					border-collapse: collapse;
+
+					.head {
+						font-family: 'Inter';
+						font-style: normal;
+						font-weight: 500;
+						font-size: 14px;
+						line-height: 150%;
+						color: #3A3A3A;
+						background: #F7F9F8;
+						padding-top: 0.5 * $main-padding;
+						padding-bottom: 0.5 * $main-padding;
+						padding-left: 1 * $main-padding;
+						outline: 1px solid #F1F1F1;
+
+					}
+
+					.item {
+						font-family: 'Inter';
+						font-style: normal;
+						font-weight: 500;
+						font-size: 14px;
+						line-height: 150%;
+						color: #646464;
+						background: #F7F9F8;
+						padding-top: 0.5 * $main-padding;
+						padding-bottom: 0.5 * $main-padding;
+						padding-left: 1 * $main-padding;
+						outline: 1px solid #F1F1F1;
+
+					}
+				}
+			}
+		}
+
+	}
+
+}
