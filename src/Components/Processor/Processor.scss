@@ -61,5 +61,73 @@ $main-padding: 12px;
 				}
 			}
 		}
+
+		.table-block {
+			height: 100%;
+			margin-top: 2*$main-padding;
+			background: #FFFFFF;
+			box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
+			border-radius: 4px;
+
+			.title {
+				margin: 2*$main-padding;
+				text-align: left;
+
+				font-family: 'Inter';
+				font-style: normal;
+				font-weight: 500;
+				font-size: 20px;
+				line-height: 30px;
+				width: 100%;
+				/* identical to box height, or 150% */
+
+				letter-spacing: -0.15px;
+
+				color: #3A3A3A;
+			}
+
+			.table {
+				height: calc(100% - 5*$main-padding);
+				max-height: 455px;
+				.table-container {
+					.data-table {
+						min-width: 100%;
+						border-radius: 4px;
+						border-collapse: collapse;
+
+						.head {
+							font-family: 'Inter';
+							font-style: normal;
+							font-weight: 700;
+							font-size: 14px;
+							line-height: 150%;
+							min-width: 100px;
+							letter-spacing: -0.15px;
+							background: #F6F8FB;
+							padding-top: 0.5 * $main-padding;
+							padding-bottom: 0.5 * $main-padding;
+							padding-left: 1 * $main-padding;
+							outline: 1px solid #F1F1F1;
+
+						}
+
+						.item {
+							font-family: 'Inter';
+							font-style: normal;
+							font-weight: 500;
+							font-size: 14px;
+							line-height: 150%;
+							color: #646464;
+							background: #FFFFFF;
+							padding-top: 0.5 * $main-padding;
+							padding-bottom: 0.5 * $main-padding;
+							padding-left: 1 * $main-padding;
+							outline: 1px solid #F1F1F1;
+
+						}
+					}
+				}
+			}
+		}
 	}
 }

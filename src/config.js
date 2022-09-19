@@ -1,3 +1,4 @@
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { processTypes } from "./processType"
 export const config = {
 	getTitle: (key) => {

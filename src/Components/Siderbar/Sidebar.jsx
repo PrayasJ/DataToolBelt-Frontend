@@ -17,23 +17,17 @@ import {
 } from '@tanstack/react-table'
 import { testColumns } from '../../test_data';
 
-type Data = {
-	title: any
-	type: any
-	value: any
-}
+const defaultData = []
 
-const defaultData: Data[] = []
-
-testColumns.forEach((type, key) => {
+testColumns.forEach((c) => {
 	defaultData.push({
-		title: key,
-		type: type,
+		title: c[0],
+		type: c[1],
 		value: 'N/a'
 	})
 })
 
-const columnHelper = createColumnHelper<Data>()
+const columnHelper = createColumnHelper()
 
 const columns = [
 	columnHelper.accessor('title', {
@@ -45,7 +39,7 @@ const columns = [
 		cell: info => <div className='item'>{info.renderValue()}</div>,
 	}),
 	columnHelper.accessor(row => row.value, {
-		id: 'lastName',
+		id: 'value',
 		cell: info => <div className='item'>{info.renderValue()}</div>,
 		header: () => <div className='head'>
 			Avg
@@ -58,6 +52,7 @@ function Sidebar() {
 
 	const [data, setData] = React.useState(() => [...defaultData])
 
+	console.log({data, columns})
 	const table = useReactTable({
 		data,
 		columns,
@@ -94,7 +89,6 @@ function Sidebar() {
 				</div>
 				<div className='table'>
 					<Scrollbars className='table-container'
-
 					>
 						<table className='data-table'>
 							<thead>

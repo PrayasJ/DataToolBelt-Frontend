@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import './Home.scss';
+import 'react-dropdown/style.css';
 import Select from 'react-select';
 import info from '../../Images/info.png'
 import process_img from '../../Images/home-process.svg'
