@@ -23,53 +23,55 @@ function Processor(type: type) {
 
 	const { id, method } = useParams()
 
-	const title = method?config.getSubTitle(type.type, method):config.getTitle(type.type)
-	if(title == undefined) {
+	const title = method ? config.getSubTitle(type.type, method) : config.getTitle(type.type)
+	if (title == undefined) {
 		window.location.href = '/'
 	}
 
-	const getColumns = (id: string | undefined):Map<string, Array<number>>  => {
+	const getColumns = (id: string | undefined): Map<string, Array<number>> => {
 		let c = new Map<string, Array<number>>([])
 		testColumns.forEach((type, key) => {
 			c.set(key, [])
 		})
 		return c
-}
+	}
 	const [columns, setColumns] = useState<Map<string, Array<number>>>(getColumns(id))
 
 
-	const getTable = (id:string | undefined) => {
+	const getTable = (id: string | undefined) => {
 		columns?.forEach((arr, key) => {
 			let getData = test.get(key)
-			if(getData !== undefined) columns.set(key, getData)
+			if (getData !== undefined) columns.set(key, getData)
 		})
 	}
 
 	getTable(id)
 
-
 	return (
-			title && <div className="processor">
+		title && <div className="processor">
 			<Sidebar />
-				<div className='title-bar'>
-					<div className='title'>
-						{title}
-					</div>
-					<div className='task-bar'>
-						<div className='task-name'>TASK ID</div>
-						<div className='task-id'>#{id}</div>
-					</div>
+			<div className='processor-main'>
+			<div className='title-bar'>
+				<div className='title'>
+					{title}
 				</div>
-				<div className='table-block'>
-					<div className='title'>
-						<div className='table'>
-							<div className='table-container'>
+				<div className='task-bar'>
+					<div className='task-name'>TASK ID</div>
+					<div className='task-id'>#{id}</div>
+				</div>
+			</div>
+			<div className='table-block'>
+				<div className='title'>
+					Table Overview
+				</div>
+				<div className='table'>
+					<div className='table-container'>
 
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
+			</div>
+		</div>
 	);
 }
 
