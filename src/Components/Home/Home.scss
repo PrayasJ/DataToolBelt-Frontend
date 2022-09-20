@@ -6,6 +6,16 @@
 
 $main-padding: 12px;
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
 .Home {
 
   .infographic {
@@ -149,6 +159,7 @@ $main-padding: 12px;
         font-weight: 700;
         padding: 1.5*$main-padding;
         margin: 2*$main-padding;
+        cursor: pointer;
       }
 
       .tc {
@@ -159,6 +170,7 @@ $main-padding: 12px;
         font-weight: 400;
         font-size: 12px;
         line-height: 18px;
+        cursor: pointer;
       }
     }
 

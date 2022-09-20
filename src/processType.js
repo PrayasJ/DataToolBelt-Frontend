@@ -54,12 +54,12 @@ export const processTypes = {
 			}
 		}
 	},
-	'conversion': {
+	'convert': {
 		title: 'Data Conversion',
 		children: {}
 	},
 	'analyze': {
-		title: 'Data Analyze',
+		title: 'Data Analysis',
 		children: {}
 	}
 }

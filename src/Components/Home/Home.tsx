@@ -35,25 +35,25 @@ const features: Features[] = [
   },
   {
     name: 'Algorithm',
-    key: 'algo',
+    key: 'processing',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.',
     src: algo
   },
   {
     name: 'Clean',
-    key: 'clean',
+    key: 'cleaning',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.',
     src: clean
   },
   {
-    name: 'Analyze',
+    name: 'Analysis',
     key: 'analyze',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.',
     src: analyze
   },
   {
     name: 'Visualize',
-    key: 'visualize',
+    key: 'visualization',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.',
     src: visualize
   }
@@ -117,6 +117,10 @@ function Home() {
     return featureSelected && file
   }
 
+  const onSubmitPress = () => {
+    window.location.href = `/12345/${featureSelected.key}`
+  }
+
   //Variable declaration
 
   const [file, setFiles] = useState<File>();
@@ -125,7 +129,7 @@ function Home() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (
-    <div className="Home">
+    <div className="Home noselect">
       <Header />
       <div className='infographic'>
         <div className='file-upload'>
@@ -174,7 +178,8 @@ function Home() {
           }
 
           {validateInputs() && 
-          <div className='submit-btn'>
+          <div className='submit-btn'
+            onClick={onSubmitPress}>
             Submit
           </div>}
 

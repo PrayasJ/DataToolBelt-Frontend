@@ -13,5 +13,18 @@ export const config = {
 		let feature = method.children[key2]
 		if(feature === undefined || feature.title === undefined) return undefined
 		return feature.title
+	},
+
+	getSupportedTypes: () => {
+		return [
+			{
+				value: 'csv',
+				label: 'CSV'
+			},
+			{
+				value: 'json',
+				label: 'JSON'
+			}
+		]
 	}
 }
