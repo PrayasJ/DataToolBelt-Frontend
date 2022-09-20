@@ -9,6 +9,8 @@ import { RiArrowDropDownLine } from "react-icons/ri"
 
 import { Scrollbars } from 'react-custom-scrollbars-2';
 
+import $ from 'jquery';
+
 import {
 	createColumnHelper,
 	flexRender,
@@ -16,6 +18,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { testColumns } from '../../test_data';
+import { AiOutlineMenu } from 'react-icons/ai';
 
 const defaultData = []
 
@@ -48,82 +51,168 @@ const columns = [
 	}),
 ]
 
+$(document).ready(function () {
+
+	$('.menu').click(function () {
+		$('.overlay').toggleClass('anim');
+		$(this).addClass('open')
+	});
+
+	$('.open').click(function () {
+		$('.overlay').toggleClass('reverse-animation');
+	})
+
+	$('.logo').click(function () {
+		$('.overlay').removeClass('anim')
+	})
+});
+
 function Sidebar() {
 
 	const [data, setData] = React.useState(() => [...defaultData])
 
-	console.log({data, columns})
+	console.log({ data, columns })
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
 
-	return (
-		<header className='sidebar'>
-			<Link to={'/'}>
-				<img className='logo full' src={logoFull} />
-				<img className='logo small' src={logo} />
-			</Link>
-			<div className='info-container'>
-				<div className='title'>File Name</div>
-				<div className='info'>xyz.csv</div>
-				<div className='title'>File Details</div>
-				<div className='info-container2'>
-					<div className='info-block'>
-						<div className='title2'>Size</div>
-						<div className='info2'>582Kb</div>
-					</div>
-					<div className='info-block'>
-						<div className='title2'>Date</div>
-						<div className='info2'>24/11/2021</div>
-					</div>
-					<div className='info-block'>
-						<div className='title2'>Row Count</div>
-						<div className='info2'>1890</div>
-					</div>
-					<div className='info-block'>
-						<div className='title2'>Coloumn Count</div>
-						<div className='info2'>24</div>
-					</div>
-				</div>
-				<div className='table'>
-					<Scrollbars className='table-container'
-					>
-						<table className='data-table'>
-							<thead>
-								{table.getHeaderGroups().map(headerGroup => (
-									<tr key={headerGroup.id}>
-										{headerGroup.headers.map(header => (
-											<th key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-													)}
-											</th>
-										))}
-									</tr>
-								))}
-							</thead>
-							<tbody>
-								{table.getRowModel().rows.map(row => (
-									<tr key={row.id}>
-										{row.getVisibleCells().map(cell => (
-											<td key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</td>
-										))}
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</Scrollbars>
-				</div>
 
+	return (
+		<div>
+			<header className='sidebar hide-on-med'>
+				<Link to={'/'}>
+					<img className='logo full' src={logoFull} />
+					<img className='logo small' src={logo} />
+				</Link>
+				<div className='info-container'>
+					<div className='title'>File Name</div>
+					<div className='info'>xyz.csv</div>
+					<div className='title'>File Details</div>
+					<div className='info-container2'>
+						<div className='info-block'>
+							<div className='title2'>Size</div>
+							<div className='info2'>582Kb</div>
+						</div>
+						<div className='info-block'>
+							<div className='title2'>Date</div>
+							<div className='info2'>24/11/2021</div>
+						</div>
+						<div className='info-block'>
+							<div className='title2'>Row Count</div>
+							<div className='info2'>1890</div>
+						</div>
+						<div className='info-block'>
+							<div className='title2'>Coloumn Count</div>
+							<div className='info2'>24</div>
+						</div>
+					</div>
+					<div className='table'>
+						<Scrollbars className='table-container'
+						>
+							<table className='data-table'>
+								<thead>
+									{table.getHeaderGroups().map(headerGroup => (
+										<tr key={headerGroup.id}>
+											{headerGroup.headers.map(header => (
+												<th key={header.id}>
+													{header.isPlaceholder
+														? null
+														: flexRender(
+															header.column.columnDef.header,
+															header.getContext()
+														)}
+												</th>
+											))}
+										</tr>
+									))}
+								</thead>
+								<tbody>
+									{table.getRowModel().rows.map(row => (
+										<tr key={row.id}>
+											{row.getVisibleCells().map(cell => (
+												<td key={cell.id}>
+													{flexRender(cell.column.columnDef.cell, cell.getContext())}
+												</td>
+											))}
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</Scrollbars>
+					</div>
+
+				</div>
+			</header>
+			<div className='wrapper'>
+				<AiOutlineMenu className='menu' />
+				<div className='overlay show-on-med'>
+					<header className='sidebar'>
+						<img className='logo full' src={logoFull} />
+						<img className='logo small' src={logo} />
+						<div className='info-container'>
+							<div className='title'>File Name</div>
+							<div className='info'>xyz.csv</div>
+							<div className='title'>File Details</div>
+							<div className='info-container2'>
+								<div className='info-block'>
+									<div className='title2'>Size</div>
+									<div className='info2'>582Kb</div>
+								</div>
+								<div className='info-block'>
+									<div className='title2'>Date</div>
+									<div className='info2'>24/11/2021</div>
+								</div>
+								<div className='info-block'>
+									<div className='title2'>Row Count</div>
+									<div className='info2'>1890</div>
+								</div>
+								<div className='info-block'>
+									<div className='title2'>Coloumn Count</div>
+									<div className='info2'>24</div>
+								</div>
+							</div>
+							<div className='table'>
+								<Scrollbars className='table-container'
+								>
+									<table className='data-table'>
+										<thead>
+											{table.getHeaderGroups().map(headerGroup => (
+												<tr key={headerGroup.id}>
+													{headerGroup.headers.map(header => (
+														<th key={header.id}>
+															{header.isPlaceholder
+																? null
+																: flexRender(
+																	header.column.columnDef.header,
+																	header.getContext()
+																)}
+														</th>
+													))}
+												</tr>
+											))}
+										</thead>
+										<tbody>
+											{table.getRowModel().rows.map(row => (
+												<tr key={row.id}>
+													{row.getVisibleCells().map(cell => (
+														<td key={cell.id}>
+															{flexRender(cell.column.columnDef.cell, cell.getContext())}
+														</td>
+													))}
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</Scrollbars>
+							</div>
+
+						</div>
+					</header>
+				</div>
 			</div>
-		</header>
+		</div>
 	);
 }
 
