@@ -34,11 +34,11 @@ $main-padding: 12px;
       left: 0.5 * $main-padding;
 	  font-size: 1.5em;
       cursor: pointer;
-	  background-color: colors.$white;
+	  background-color: colors.$pure-white;
 	  padding: 0.5 * $main-padding;
 	  border-radius: 4px;
 	  border-color: colors.$black;
-	  border-width: 1px;
+	  border-width: 0.5px;
 	  border-style: solid;
     }
 }
