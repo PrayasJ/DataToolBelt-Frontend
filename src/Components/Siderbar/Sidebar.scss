@@ -24,8 +24,10 @@ $main-padding: 12px;
     position: absolute;
     overflow: hidden;
 	z-index: 99;
+	pointer-events: none;
 
     .menu {
+	pointer-events: all;
       z-index: 0;
       position: absolute;
       top: 4 * $main-padding;
@@ -35,6 +37,7 @@ $main-padding: 12px;
     }
 }
 .overlay {
+	pointer-events: all;
 	position: absolute;
 	bottom: -99%;
 	height: 100%;
