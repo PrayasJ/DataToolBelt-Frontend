@@ -13,6 +13,8 @@ $main-padding: 12px;
 }
 
 .show-on-med {
+	position: absolute;
+	visibility: hidden;
 	@media screen and (max-width: variables.$medium) {
 		position: flex;
 		visibility: visible;
@@ -21,7 +23,7 @@ $main-padding: 12px;
 .wrapper {
     width: 100%;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     overflow: hidden;
 	z-index: 99;
 	pointer-events: none;

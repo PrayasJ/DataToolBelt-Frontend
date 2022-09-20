@@ -33,7 +33,7 @@ $main-padding: 12px;
 		flex-direction: column;
 		padding: 2 * $main-padding;
 		width: 100%;
-		overflow-y: scroll;
+		overflow-y: auto;
 		height: 90vh;
 
 		.title-bar {

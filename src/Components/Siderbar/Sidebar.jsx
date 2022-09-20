@@ -145,9 +145,9 @@ function Sidebar() {
 
 				</div>
 			</header>
-			<div className='wrapper'>
+			<div className='wrapper show-on-med'>
 				<AiOutlineMenu className='menu' />
-				<div className='overlay show-on-med'>
+				<div className='overlay'>
 					<header className='sidebar'>
 						<img className='logo full' src={logoFull} />
 						<img className='logo small' src={logo} />
