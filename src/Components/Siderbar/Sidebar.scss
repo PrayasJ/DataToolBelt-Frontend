@@ -30,10 +30,16 @@ $main-padding: 12px;
 	pointer-events: all;
       z-index: 0;
       position: absolute;
-      top: 4 * $main-padding;
+      top: 0.5 * $main-padding;
       left: 0.5 * $main-padding;
-	  font-size: 2em;
+	  font-size: 1.5em;
       cursor: pointer;
+	  background-color: colors.$white;
+	  padding: 0.5 * $main-padding;
+	  border-radius: 4px;
+	  border-color: colors.$black;
+	  border-width: 1px;
+	  border-style: solid;
     }
 }
 .overlay {
