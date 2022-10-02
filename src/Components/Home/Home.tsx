@@ -16,6 +16,8 @@ import { MdRemoveCircle } from 'react-icons/md'
 
 import { useDropzone } from 'react-dropzone'
 import Header from '../Header/Header';
+import Axios from 'axios';
+import { config } from '../../config';
 
 //Features on our platform with their image links
 
@@ -84,11 +86,6 @@ const steps: Steps[] = [
   }
 ]
 
-let bytesToHuman = (size: number) => {
-  let i = Math.floor(Math.log(size) / Math.log(1024))
-  return Number((size / Math.pow(1024, i)).toFixed(2)).toString() + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-}
-
 function Home() {
 
   //Function Declaration for file drag and drop hook
@@ -118,7 +115,27 @@ function Home() {
   }
 
   const onSubmitPress = () => {
-    window.location.href = `/12345/${featureSelected.key}`
+    if(file == undefined) return
+    let formData = new FormData()
+    formData.append('file', file)
+    Axios.post(
+      config.routes.upload, 
+      formData, 
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    ).then((res) => {
+      console.log({res})
+      let taskId = res.data
+      if(typeof taskId == 'number'){
+        window.location.href = `/${taskId}/${featureSelected.key}`
+      }
+    }).catch((err) => {
+      console.log({err})
+    })
+    //window.location.href = `/12345/${featureSelected.key}`
   }
 
   //Variable declaration
@@ -158,7 +175,7 @@ function Home() {
           </div>
           {file ?
             <div className='file-info' onClick={removeFile}>
-              {file.name + ' - ' + bytesToHuman(file.size)}
+              {file.name + ' - ' + config.bytesToHuman(file.size)}
               <MdRemoveCircle className='remove-btn'/>
             </div> :
             <div className={`drop-area ${isDragActive ? 'drag' : ''}`} {...getRootProps()}>

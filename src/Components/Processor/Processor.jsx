@@ -1,255 +1,338 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import Select from 'react-select'
-import { config } from '../../config';
-import Sidebar from '../Siderbar/Sidebar';
-import './Processor.scss';
+import React from "react";
+import { useParams } from "react-router-dom";
+import Select from "react-select";
+import { config } from "../../config";
+import Sidebar from "../Siderbar/Sidebar";
+import "./Processor.scss";
+import Axios from "axios";
 
-import { Scrollbars } from 'react-custom-scrollbars-2';
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 import {
-	createColumnHelper,
-	flexRender,
-	getCoreRowModel,
-	useReactTable,
-} from '@tanstack/react-table'
-import { useState } from 'react';
-import { test, testColumns } from '../../test_data';
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useState } from "react";
+import { test, testColumns } from "../../test_data";
 
-import { AiOutlineLeft, AiOutlineRight, AiOutlineArrowRight } from 'react-icons/ai'
-import { processTypes } from '../../processType';
+import {
+  AiOutlineLeft,
+  AiOutlineRight,
+  AiOutlineArrowRight,
+} from "react-icons/ai";
+import { processTypes } from "../../processType";
 
-import subicon1 from '../../Images/sub-icon-1.svg';
-import subicon2 from '../../Images/sub-icon-2.svg';
-import subicon3 from '../../Images/sub-icon-3.svg';
-import subicon4 from '../../Images/sub-icon-4.svg';
+import subicon1 from "../../Images/sub-icon-1.svg";
+import subicon2 from "../../Images/sub-icon-2.svg";
+import subicon3 from "../../Images/sub-icon-3.svg";
+import subicon4 from "../../Images/sub-icon-4.svg";
 
 const methodIcons = {
-	0: subicon1,
-	1: subicon2,
-	2: subicon3,
-	3: subicon4
+  0: subicon1,
+  1: subicon2,
+  2: subicon3,
+  3: subicon4,
+};
+
+const columns = [
+  { field: "title", name: "Title" },
+  { field: "type", name: "Type" },
+  { field: "avg", name: "Avg" },
+  { field: "min", name: "Min" },
+  { field: "max", name: "Max" },
+];
+
+const withParams = (WrappedComponent) => (props) => {
+  const params = useParams();
+
+  return <WrappedComponent {...props} params={params} />;
+};
+
+const rowIndexes = [];
+
+for (let i = 0; i < 25; i++) {
+  rowIndexes.push(i);
 }
 
+class Processor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      taskId: props.params.id,
+      type: props.params.type,
+      method: props.params.method,
+      items: 57,
+      title: "",
+      size: "",
+      rows: [],
+      columns: [],
+      columnCount: 0,
+      rowCount: 0,
+      page: 1,
+      totalpages: 1,
+      data: {},
+    };
+    this.title = this.state.method
+      ? config.getSubTitle(this.state.type, this.state.method)
+      : config.getTitle(this.state.type);
+    if (this.title == undefined) {
+      window.location.href = "/";
+    }
 
-function Processor(type) {
+    document.title = this.title + " - DataToolBelt";
+    Axios.get(config.routes.fetch + `/${this.state.taskId}`)
+      .then((res) => {
+        let rows = Object.values(res.data.col);
+        this.setState({
+          title: res.data.name,
+          size: res.data.size,
+          date: res.data.dt,
+          rows,
+          columns,
+          columnCount: columns.length,
+          rowCount: res.data.rows,
+          totalpages:
+            res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25),
+        });
 
-	const { id, method } = useParams()
+        rows.map((row) => {
+          Axios.post(config.routes.get, {
+            taskId: this.state.taskId,
+            col: row.title,
+            page: this.state.page - 1,
+          })
+            .then((res) => {
+              let updateRow = this.state.data;
+              updateRow[row.title] = res.data;
+              this.setState({
+                data: updateRow,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      })
+      .catch((err) => {
+        //show error page
+      });
+  }
 
-	const title = method ? config.getSubTitle(type.type, method) : config.getTitle(type.type)
-	document.title = title + ' - DataToolBelt'
-	if (title == undefined) {
-		window.location.href = '/'
-	}
+  onPrevPage = () => {
+    if (this.state.page > 1) {
+      this.setState({
+        page: this.state.page - 1,
+				data: {}
+      });
+    }
 
-	const getColumns = (id) => {
-		let c = {}
-		testColumns.forEach((c2) => {
-			c[c2[0]] = {}
-		})
-		return c
-	}
+		this.state.rows.map((row) => {
+			Axios.post(config.routes.get, {
+				taskId: this.state.taskId,
+				col: row.title,
+				page: this.state.page - 1,
+			})
+				.then((res) => {
+					let updateRow = this.state.data;
+					updateRow[row.title] = res.data;
+					this.setState({
+						data: updateRow,
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		});
+  };
 
-	const items = 55
+  onNextPage = () => {
+    if (this.state.page < this.state.totalpages) {
+      this.setState({
+        page: this.state.page + 1,
+				data: {}
+      });
+    }
 
-	let totalpages = (items % 25) == 0 ? 0 : 1 + Math.floor(items / 25)
-	const [columns, setColumns] = useState(getColumns(id))
-	const [page, setPage] = useState(1)
+		this.state.rows.map((row) => {
+			Axios.post(config.routes.get, {
+				taskId: this.state.taskId,
+				col: row.title,
+				page: this.state.page - 1,
+			})
+				.then((res) => {
+					let updateRow = this.state.data;
+					updateRow[row.title] = res.data;
+					this.setState({
+						data: updateRow,
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		});
+  };
 
+  openSubMethod = (sub) => {
+    window.location.href = `/${this.state.taskId}/${this.state.type}/${sub}`;
+  };
 
-	const getTable = (id, page) => {
-		Object.keys(columns).forEach((key) => {
-			let getData = test[key]
-			if (getData !== undefined) columns[key] = getData
-		})
-	}
+  onTypeSelect = (e) => {
+    console.log(e);
+  };
 
-	getTable(id, page)
+  selectStyles = {
+    option: (provided, state) => ({
+      ...provided,
+    }),
+    control: () => ({
+      width: "100%",
+      display: "flex",
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = "opacity 300ms";
 
-	const colCount = test.length
-	const rowCount = test['c1'].length
-	const defaultData = []
-	for (let i = 0; i < rowCount; i++) {
-		defaultData.push({})
-	}
-	Object.keys(columns).forEach((key) => {
-		for (let i = 0; i < columns[key].length; i++) {
-			defaultData[i][key] = columns[key][i].toString()
-		}
-	})
+      return { ...provided, opacity, transition };
+    },
+  };
 
-	const columnHelper = createColumnHelper()
+  render() {
+    return (
+      this.state.title && (
+        <div className="processor">
+          <Sidebar taskId={this.state.taskId} />
+          <div className="processor-main">
+            <div className="title-bar">
+              <div className="title noselect">{this.title}</div>
+              <div className="task-bar">
+                <div className="task-name noselect">TASK ID</div>
+                <div className="task-id">#{this.state.taskId}</div>
+              </div>
+            </div>
+            {!this.state.method && processTypes[this.state.type].children && (
+              <div className="method-block noselect">
+                {Object.keys(processTypes[this.state.type].children).map(
+                  (submethod, i) => {
+                    let subm =
+                      processTypes[this.state.type].children[submethod];
+                    return (
+                      <div
+                        className="submethod"
+                        onClick={() => this.openSubMethod(submethod)}
+                      >
+                        <img className="sub-icon" src={methodIcons[i]} />
+                        <div className="sub-title">{subm.title}</div>
+                        <div className="sub-desc">{subm.desc}</div>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            )}
 
-	const columnData = Object.keys(columns).map((key) => {
-		return columnHelper.accessor(key, {
-			header: () => <div className='head'>{key}</div>,
-			cell: info => <div className='item'>{info.renderValue()}</div>,
-		})
-	})
-
-	const [data, setData] = React.useState(() => [...defaultData])
-
-	const table = useReactTable({
-		data,
-		columns: columnData,
-		getCoreRowModel: getCoreRowModel()
-	})
-
-	const onPrevPage = () => {
-		if (page > 1) {
-			setPage(page - 1)
-		}
-	}
-
-	const onNextPage = () => {
-		if (page < totalpages) {
-			setPage(page + 1)
-		}
-	}
-
-	const openSubMethod = (sub) => {
-		window.location.href = `/${id}/${type.type}/${sub}`
-	}
-
-	const selectStyles = {
-		option: (provided, state) => ({
-			...provided,
-		}),
-		control: () => ({
-			width: '100%',
-			display: 'flex',
-		}),
-		singleValue: (provided, state) => {
-			const opacity = state.isDisabled ? 0.5 : 1;
-			const transition = 'opacity 300ms';
-	
-			return { ...provided, opacity, transition };
-		}
-	}
-
-	const onTypeSelect = (e) => {
-		console.log(e)
-	}
-
-	return (
-		title && <div className="processor">
-			<Sidebar />
-			<div className='processor-main'>
-				<div className='title-bar'>
-					<div className='title noselect'>
-						{title}
-					</div>
-					<div className='task-bar'>
-						<div className='task-name noselect'>TASK ID</div>
-						<div className='task-id'>#{id}</div>
-					</div>
-				</div>
-				{
-					!method && processTypes[type.type].children && 
-					<div className='method-block noselect'>
-						{Object.keys(processTypes[type.type].children).map((submethod, i) => {
-							let subm = processTypes[type.type].children[submethod];
-							return (
-								<div className='submethod' onClick={() => openSubMethod(submethod)}>
-									<img className='sub-icon' src={methodIcons[i]} />
-									<div className='sub-title'>
-										{subm.title}
-									</div>
-									<div className='sub-desc'>
-										{subm.desc}
-									</div>
-								</div>
-							)
-						})}
-					</div>
-				}
-
-				{
-					type.type == 'convert' && 
-					<div className='input-block'>
-						<div className='input-select'>
-							<div className='select-title'>
-								Select Datatype
-								<Select
-									options={config.getSupportedTypes()}
-									onChange={onTypeSelect}
-									className='selector'
-									styles={selectStyles}
-									components={{
-										IndicatorSeparator: () => null
-									}}
-								/>
-							</div>
-						</div>
-						<div className='submit-btn'>
-							 Start Conversion
-							 <AiOutlineArrowRight />
-							</div>
-					</div>
-				}
-				<div className='table-block'>
-					<div className='title noselect'>
-						Table Overview
-					</div>
-					<div className='table'>
-						<Scrollbars
-							className='table-container'>
-							<table className='data-table'>
-								<thead>
-									{table.getHeaderGroups().map(headerGroup => (
-										<tr key={headerGroup.id}>
-											{headerGroup.headers.map(header => (
-												<th key={header.id}>
-													{header.isPlaceholder
-														? null
-														: flexRender(
-															header.column.columnDef.header,
-															header.getContext()
-														)}
-												</th>
-											))}
-										</tr>
-									))}
-								</thead>
-								<tbody>
-									{table.getRowModel().rows.map(row => (
-										<tr key={row.id}>
-											{row.getVisibleCells().map(cell => (
-												<td key={cell.id}>
-													{flexRender(cell.column.columnDef.cell, cell.getContext())}
-												</td>
-											))}
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</Scrollbars>
-					</div>
-					<div className='pages noselect'>
-						<div className='page-item'>
-							{`${(page - 1) * 25 + 1} - ${Math.min(page * 25, items)} of ${items} items`}
-						</div>
-						<div className='page-item'>
-							{page} of {totalpages} Pages
-						</div>
-						<div className='page-item page-row'>
-							<AiOutlineLeft
-								onClick={onPrevPage}
-								style={{ visibility: `${page > 1 ? 'visible' : 'hidden'}` }}
-							/>
-							<div className='page-box'>
-								{page}
-							</div>
-							<AiOutlineRight
-								onClick={onNextPage}
-								style={{ visibility: `${page < totalpages ? 'visible' : 'hidden'}` }}
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+            {this.state.type == "convert" && (
+              <div className="input-block">
+                <div className="input-select">
+                  <div className="select-title">
+                    Select Datatype
+                    <Select
+                      options={config.getSupportedTypes()}
+                      onChange={this.onTypeSelect}
+                      className="selector"
+                      styles={this.selectStyles}
+                      components={{
+                        IndicatorSeparator: () => null,
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="submit-btn">
+                  Start Conversion
+                  <AiOutlineArrowRight />
+                </div>
+              </div>
+            )}
+            <div className="table-block">
+              <div className="title noselect">Table Overview</div>
+              <div className="table">
+                <Scrollbars className="table-container">
+                  {this.state.rows && (
+                    <table className="data-table">
+                      <tr>
+                        {this.state.rows.map((row) => {
+                          return (
+                            <th key={row.field} className="head">
+                              {row.title}
+                            </th>
+                          );
+                        })}
+                      </tr>
+                      {rowIndexes.slice(0,this.state.page == this.state.totalpages? Math.min(25, (this.state.rowCount % 25)): 25).map((idx) => {
+                        return (
+                          <tr>
+                            {this.state.rows.map((row) => {
+                              return (
+                                <td key={row.field} className="item">
+                                  {this.state.data[row.title] ? this.state.data[row.title].values[idx]: 'Loading'}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                      {/* {this.state.rows.map((row, idx) => {
+                      return (
+                        <tr key={idx}>
+                          {this.state.columns.map((col) => {
+                            return <td className="item">{row[col.field]}</td>;
+                          })}
+                        </tr>
+                      );
+                    })} */}
+                    </table>
+                  )}
+                </Scrollbars>
+              </div>
+              <div className="pages noselect">
+                <div className="page-item">
+                  {`${(this.state.page - 1) * 25 + 1} - ${Math.min(
+                    this.state.page * 25,
+                    this.state.rowCount
+                  )} of ${this.state.rowCount} items`}
+                </div>
+                <div className="page-item">
+                  {this.state.page} of {this.state.totalpages} Pages
+                </div>
+                <div className="page-item page-row">
+                  <AiOutlineLeft
+                    onClick={this.onPrevPage}
+                    style={{
+                      visibility: `${
+                        this.state.page > 1 ? "visible" : "hidden"
+                      }`,
+                    }}
+                  />
+                  <div className="page-box">{this.state.page}</div>
+                  <AiOutlineRight
+                    onClick={this.onNextPage}
+                    style={{
+                      visibility: `${
+                        this.state.page < this.state.totalpages
+                          ? "visible"
+                          : "hidden"
+                      }`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    );
+  }
 }
 
-export default Processor;
+export default withParams(Processor);
