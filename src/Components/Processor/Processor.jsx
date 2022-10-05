@@ -66,6 +66,7 @@ class Processor extends React.Component {
       items: 57,
       title: "",
       size: "",
+      date: "",
       rows: [],
       columns: [],
       columnCount: 0,
@@ -74,6 +75,8 @@ class Processor extends React.Component {
       totalpages: 1,
       data: {},
       params: {},
+      textinp1: "",
+      textinp2: "",
     };
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
@@ -83,6 +86,10 @@ class Processor extends React.Component {
     }
 
     document.title = this.title + " - DataToolBelt";
+    this.getTableData();
+  }
+
+  getTableData = () => {
     Axios.get(config.routes.fetch + `/${this.state.taskId}`)
       .then((res) => {
         let rows = Object.values(res.data.col);
@@ -119,7 +126,7 @@ class Processor extends React.Component {
       .catch((err) => {
         //show error page
       });
-  }
+  };
 
   onPrevPage = () => {
     let page = this.state.page;
@@ -149,6 +156,7 @@ class Processor extends React.Component {
   };
 
   onNextPage = () => {
+    console.log(this.state);
     let page = this.state.page;
     if (page < this.state.totalpages) {
       this.state.rows.map((row) => {
@@ -215,6 +223,67 @@ class Processor extends React.Component {
       });
   };
 
+  //For normalization
+  onColSelectNormalization = (e) => {
+    console.log(e);
+    let params = this.state.params;
+    params.col = e.value;
+    this.setState({
+      params,
+    });
+  };
+
+  onMinSetNormalization = (e) => {
+    let num = e.target.value;
+    num = num.match("[+-]?([0-9]*[.])?[0-9]*");
+    if (num == null) return;
+    let params = this.state.params;
+    params.min = num[0];
+    this.setState({
+      textinp1: num[0],
+      params,
+    });
+  };
+
+  onMaxSetNormalization = (e) => {
+    let num = e.target.value;
+    num = num.match("[+-]?([0-9]*[.])?[0-9]*");
+    if (num == null) return;
+    let params = this.state.params;
+    params.max = num[0];
+    this.setState({
+      textinp2: num[0],
+      params,
+    });
+  };
+
+  normalizeData = (e) => {
+    if (!this.validateNormalize()) return;
+    Axios.post(config.routes.function, {
+      taskId: this.state.taskId,
+      operation: this.state.type,
+      method: this.state.method,
+      params: this.state.params,
+    })
+      .then((res) => {
+        this.getTableData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  validateNormalize = () => {
+    let params = this.state.params;
+    return (
+      params.col != undefined &&
+      params.min != undefined &&
+      params.max != undefined &&
+      params.min != "" &&
+      params.max != ""
+    );
+  };
+
   selectStyles = {
     option: (provided, state) => ({
       ...provided,
@@ -231,11 +300,48 @@ class Processor extends React.Component {
     },
   };
 
+  getRows = () => {
+    return this.state.rows
+  }
+
+  getCol = () => {
+    return this.state.columns
+  }
+
+  getTitle = () => {
+    return this.state.title
+  }
+
+  getSize = () => {
+    return this.state.size
+  }
+
+  getRowCount = () => {
+    return this.state.rowCount
+  }
+
+  getColCount = () => {
+    return this.state.columnCount
+  }
+
+  getDate = () => {
+    return this.state.date
+  }
+
   render() {
     return (
       this.state.title && (
         <div className="processor">
-          <Sidebar taskId={this.state.taskId} />
+          <Sidebar
+            taskId={this.state.taskId}
+            rows={this.getRows}
+            columns={this.getCol}
+            title={this.getTitle}
+            size={this.getSize}
+            rCount={this.getRowCount}
+            cCount={this.getColCount}
+            date={this.getDate}
+          />
           <div className="processor-main">
             <div className="title-bar">
               <div className="title noselect">{this.title}</div>
@@ -265,7 +371,8 @@ class Processor extends React.Component {
                 )}
               </div>
             )}
-
+            {/*Data inputs*/}
+            {/*Convert inputs*/}
             {this.state.type == "convert" && (
               <div className="input-block">
                 <div className="input-select">
@@ -286,6 +393,87 @@ class Processor extends React.Component {
                   Start Conversion
                   <AiOutlineArrowRight />
                 </div>
+              </div>
+            )}
+            {/*Normalization Inputs*/}
+            {this.state.method == "normalization" && (
+              <div>
+                <div className="input-block">
+                  <div
+                    className="input-col"
+                    style={{ marginLeft: "0", width: "40%" }}
+                  >
+                    <div className="input-title">Column Details</div>
+                    <div className="input-select">
+                      <div className="select-title">
+                        Column Names
+                        <Select
+                          options={this.state.rows
+                            .filter((col) => col.type != "object")
+                            .map((col) => {
+                              return {
+                                value: col.title,
+                                label: col.title,
+                              };
+                            })}
+                          onChange={this.onColSelectNormalization}
+                          className="selector"
+                          styles={this.selectStyles}
+                          components={{
+                            IndicatorSeparator: () => null,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="input-col" style={{ marginRight: "0" }}>
+                    <div className="input-title">Range of Integers</div>
+                    <div className="input-container">
+                      <div className="input-select">
+                        <div className="select-title">
+                          From
+                          <input
+                            className="text-input"
+                            value={this.state.textinp1}
+                            onChange={this.onMinSetNormalization}
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="input-select"
+                        style={{ marginRight: "0" }}
+                      >
+                        <div className="select-title">
+                          To
+                          <input
+                            className="text-input"
+                            value={this.state.textinp2}
+                            onChange={this.onMaxSetNormalization}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {this.validateNormalize() && (
+                  <div
+                    className="input-block"
+                    style={{ justifyContent: "end" }}
+                  >
+                    <div
+                      className="submit-btn"
+                      style={{
+                        width: "100%",
+                        height: "3rem",
+                        maxWidth: "12rem",
+                      }}
+                      onClick={this.normalizeData}
+                    >
+                      Normalize Data
+                      <AiOutlineArrowRight />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             <div className="table-block">

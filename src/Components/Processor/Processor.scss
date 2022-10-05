@@ -101,6 +101,26 @@ $main-padding: 12px;
 			justify-content: space-between;
 			align-items: stretch;
 			text-align: left;
+
+			.input-col {
+				margin: 1*$main-padding;
+				width: 100%;
+				.input-title{
+					margin-bottom: $main-padding;
+					margin-top: $main-padding;
+					font-family: 'Inter';
+					font-style: normal;
+					font-weight: 500;
+					font-size: 14px;
+					line-height: 22px;
+					color: #3A3A3A;
+				}
+
+				.input-container {
+					display: flex;
+					width: 100%;
+				}
+			}
 			.input-select {
 
 				width: 100%;
@@ -118,9 +138,26 @@ $main-padding: 12px;
 					font-weight: 400;
 					font-size: 9px;
 					line-height: 11px;
-
 					color: #9B9B9B;
+					.text-input {
+						display: block;
 
+						font-family: 'Inter';
+						font-style: normal;
+						font-weight: 500;
+						font-size: 14px;
+						line-height: 17px;
+						border: none;
+						color: #3A3A3A;
+
+						padding-top: 0.75 * $main-padding;
+						padding-bottom: 0.75 * $main-padding;
+						width: 90%;
+					}
+
+					.text-input:focus {
+						outline: none;
+					}
 					.selector {
 						font-family: 'Inter';
 						font-style: normal;
