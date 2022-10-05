@@ -4,7 +4,7 @@ import { processTypes } from "./processType"
 let _index = process.env.NODE_ENV == "production" ? 1:0
 let baseUrl = [
 	'http://192.168.29.18:5000/',
-	'http://localhost:6543/'
+	'https://prayasj.pythonanywhere.com/'
 ][_index]
 
 export const config = {
