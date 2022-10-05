@@ -35,6 +35,10 @@ export const config = {
 			{
 				value: 'json',
 				label: 'JSON'
+			},
+			{
+				value: 'xml',
+				label: 'XML'
 			}
 		]
 	},
@@ -43,5 +47,6 @@ export const config = {
 		upload: baseUrl + 'uploader',
 		fetch: baseUrl + 'fetch',
 		get: baseUrl + 'get',
+		function: baseUrl + 'function',
 	}
 }

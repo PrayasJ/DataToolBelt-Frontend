@@ -61,17 +61,20 @@ const columns = [
   { field: "max", name: "Max" },
 ];
 
-$(document).ready(function () {
-  $(".menu").click(function () {
+$(function () {
+  $(".menu").on("click", function () {
+    console.log("menu clicked");
     $(".overlay").toggleClass("anim");
     $(this).addClass("open");
   });
 
-  $(".open").click(function () {
+  $(".open").on("click", function () {
+    console.log("open clicked");
     $(".overlay").toggleClass("reverse-animation");
   });
 
-  $(".logo").click(function () {
+  $(".logo").on("click", function () {
+    console.log("logo clicked");
     $(".overlay").removeClass("anim");
   });
 });
@@ -144,24 +147,32 @@ class Sidebar extends React.Component {
               <Scrollbars className="table-container">
                 {this.state.rows && (
                   <table className="data-table">
-                    <tr>
-                      {this.state.columns.map((col) => {
+                    <thead>
+                      <tr>
+                        {this.state.columns.map((col) => {
+                          return (
+                            <th key={col.field} className="head">
+                              {col.name}
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.rows.map((row, idx) => {
                         return (
-                          <th key={col.field} className="head">
-                            {col.name}
-                          </th>
+                          <tr key={idx}>
+                            {this.state.columns.map((col) => {
+                              return (
+                                <td key={col.field} className="item">
+                                  {row[col.field]}
+                                </td>
+                              );
+                            })}
+                          </tr>
                         );
                       })}
-                    </tr>
-                    {this.state.rows.map((row, idx) => {
-                      return (
-                        <tr key={idx}>
-                          {this.state.columns.map((col) => {
-                            return <td className="item">{row[col.field]}</td>;
-                          })}
-                        </tr>
-                      );
-                    })}
+                    </tbody>
                   </table>
                 )}
               </Scrollbars>
@@ -202,6 +213,7 @@ class Sidebar extends React.Component {
                   <Scrollbars className="table-container ag-theme-alpine">
                     {this.state.rows && (
                       <table className="data-table">
+                      <thead>
                         <tr>
                           {this.state.columns.map((col) => {
                             return (
@@ -211,18 +223,23 @@ class Sidebar extends React.Component {
                             );
                           })}
                         </tr>
+                      </thead>
+                      <tbody>
                         {this.state.rows.map((row, idx) => {
                           return (
                             <tr key={idx}>
                               {this.state.columns.map((col) => {
                                 return (
-                                  <td className="item">{row[col.field]}</td>
+                                  <td key={col.field} className="item">
+                                    {row[col.field]}
+                                  </td>
                                 );
                               })}
                             </tr>
                           );
                         })}
-                      </table>
+                      </tbody>
+                    </table>
                     )}
                   </Scrollbars>
                 </div>

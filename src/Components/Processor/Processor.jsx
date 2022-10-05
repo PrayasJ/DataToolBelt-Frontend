@@ -73,6 +73,7 @@ class Processor extends React.Component {
       page: 1,
       totalpages: 1,
       data: {},
+      params: {},
     };
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
@@ -121,65 +122,97 @@ class Processor extends React.Component {
   }
 
   onPrevPage = () => {
-    if (this.state.page > 1) {
+    let page = this.state.page;
+    if (page > 1) {
+      this.state.rows.map((row) => {
+        Axios.post(config.routes.get, {
+          taskId: this.state.taskId,
+          col: row.title,
+          page: page - 2,
+        })
+          .then((res) => {
+            let updateRow = this.state.data;
+            updateRow[row.title] = res.data;
+            this.setState({
+              data: updateRow,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
       this.setState({
-        page: this.state.page - 1,
-				data: {}
+        page: page - 1,
+        data: {},
       });
     }
-
-		this.state.rows.map((row) => {
-			Axios.post(config.routes.get, {
-				taskId: this.state.taskId,
-				col: row.title,
-				page: this.state.page - 1,
-			})
-				.then((res) => {
-					let updateRow = this.state.data;
-					updateRow[row.title] = res.data;
-					this.setState({
-						data: updateRow,
-					});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		});
   };
 
   onNextPage = () => {
-    if (this.state.page < this.state.totalpages) {
+    let page = this.state.page;
+    if (page < this.state.totalpages) {
+      this.state.rows.map((row) => {
+        Axios.post(config.routes.get, {
+          taskId: this.state.taskId,
+          col: row.title,
+          page: page,
+        })
+          .then((res) => {
+            let updateRow = this.state.data;
+            updateRow[row.title] = res.data;
+            this.setState({
+              data: updateRow,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
       this.setState({
-        page: this.state.page + 1,
-				data: {}
+        page: page + 1,
+        data: {},
       });
     }
-
-		this.state.rows.map((row) => {
-			Axios.post(config.routes.get, {
-				taskId: this.state.taskId,
-				col: row.title,
-				page: this.state.page - 1,
-			})
-				.then((res) => {
-					let updateRow = this.state.data;
-					updateRow[row.title] = res.data;
-					this.setState({
-						data: updateRow,
-					});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		});
   };
 
   openSubMethod = (sub) => {
     window.location.href = `/${this.state.taskId}/${this.state.type}/${sub}`;
   };
 
+  //For convert type
   onTypeSelect = (e) => {
     console.log(e);
+    this.setState({
+      params: {
+        type: e.value,
+      },
+    });
+  };
+
+  convertData = (e) => {
+    Axios.post(
+      config.routes.function,
+      {
+        taskId: this.state.taskId,
+        operation: this.state.type,
+        params: this.state.params,
+      },
+      {
+        responseType: "blob",
+      }
+    )
+      .then((res) => {
+        console.log(res);
+        const dl = document.createElement("a");
+        dl.href = window.URL.createObjectURL(res.data);
+        dl.setAttribute("download", this.state.taskId);
+        document.body.appendChild(dl);
+        dl.click();
+        dl.parentNode.removeChild(dl);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   selectStyles = {
@@ -219,6 +252,7 @@ class Processor extends React.Component {
                       processTypes[this.state.type].children[submethod];
                     return (
                       <div
+                        key={i}
                         className="submethod"
                         onClick={() => this.openSubMethod(submethod)}
                       >
@@ -248,7 +282,7 @@ class Processor extends React.Component {
                     />
                   </div>
                 </div>
-                <div className="submit-btn">
+                <div className="submit-btn" onClick={this.convertData}>
                   Start Conversion
                   <AiOutlineArrowRight />
                 </div>
@@ -260,37 +294,41 @@ class Processor extends React.Component {
                 <Scrollbars className="table-container">
                   {this.state.rows && (
                     <table className="data-table">
-                      <tr>
-                        {this.state.rows.map((row) => {
-                          return (
-                            <th key={row.field} className="head">
-                              {row.title}
-                            </th>
-                          );
-                        })}
-                      </tr>
-                      {rowIndexes.slice(0,this.state.page == this.state.totalpages? Math.min(25, (this.state.rowCount % 25)): 25).map((idx) => {
-                        return (
-                          <tr>
-                            {this.state.rows.map((row) => {
-                              return (
-                                <td key={row.field} className="item">
-                                  {this.state.data[row.title] ? this.state.data[row.title].values[idx]: 'Loading'}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        );
-                      })}
-                      {/* {this.state.rows.map((row, idx) => {
-                      return (
-                        <tr key={idx}>
-                          {this.state.columns.map((col) => {
-                            return <td className="item">{row[col.field]}</td>;
+                      <thead>
+                        <tr>
+                          {this.state.rows.map((row, j) => {
+                            return (
+                              <th key={j} className="head">
+                                {row.title}
+                              </th>
+                            );
                           })}
                         </tr>
-                      );
-                    })} */}
+                      </thead>
+                      <tbody>
+                        {rowIndexes
+                          .slice(
+                            0,
+                            this.state.page == this.state.totalpages
+                              ? Math.min(25, this.state.rowCount % 25)
+                              : 25
+                          )
+                          .map((idx) => {
+                            return (
+                              <tr key={idx}>
+                                {this.state.rows.map((row, j) => {
+                                  return (
+                                    <td key={j} className="item">
+                                      {this.state.data[row.title]
+                                        ? this.state.data[row.title].values[idx]
+                                        : "Loading"}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            );
+                          })}
+                      </tbody>
                     </table>
                   )}
                 </Scrollbars>
