@@ -43,6 +43,27 @@ export const config = {
 		]
 	},
 
+	getNullValueOperations: () => {
+		return [
+			{
+				value: 'drop',
+				label: 'Drop',
+			},
+			{
+				value: 'Average',
+				label: 'Average',
+			},
+			{
+				value: 'Maximum',
+				label: 'Maximum',
+			},
+			{
+				value: 'Minimum',
+				label: 'Minimum',
+			},
+		]
+	},
+	
 	routes: {
 		upload: baseUrl + 'uploader',
 		fetch: baseUrl + 'fetch',
