@@ -4,6 +4,8 @@ import Select from "react-select";
 import { config } from "../../config";
 import Sidebar from "../Siderbar/Sidebar";
 import "./Processor.scss";
+import "../../loader.scss";
+import Loader from "../../Loader";
 import Axios from "axios";
 
 import { Scrollbars } from "react-custom-scrollbars-2";
@@ -69,6 +71,7 @@ class Processor extends React.Component {
       params: {},
       textinp1: "",
       textinp2: "",
+      isLoading: true,
     };
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
@@ -84,10 +87,14 @@ class Processor extends React.Component {
   }
 
   getTableData = () => {
+    this.setState({
+      isLoading: true
+    })
     Axios.get(config.routes.fetch + `/${this.state.taskId}`)
       .then((res) => {
         let rows = Object.values(res.data.col);
         this.setState({
+          isLoading: false,
           title: res.data.name,
           size: res.data.size,
           date: res.data.dt,
@@ -229,6 +236,9 @@ class Processor extends React.Component {
   };
 
   convertData = (e) => {
+    this.setState({
+      isLoading: true
+    })
     Axios.post(
       config.routes.function,
       {
@@ -241,6 +251,9 @@ class Processor extends React.Component {
       }
     )
       .then((res) => {
+        this.setState({
+          isLoading: false
+        })
         console.log(res);
         const dl = document.createElement("a");
         dl.href = window.URL.createObjectURL(res.data);
@@ -397,7 +410,7 @@ class Processor extends React.Component {
   //Feature Creation functions
   variableVarUpdate = (newVar, idx) => {
     let params = this.state.params;
-    if(!/^[a-zA-Z]+$/.test(newVar) && newVar != '') return
+    if (!/^[a-zA-Z]+$/.test(newVar) && newVar != "") return;
     let varList = params.variables.map((variable) => variable.var);
     if (varList.indexOf(newVar) != -1 && newVar != "") return;
     params.variables[idx].var = newVar;
@@ -436,8 +449,8 @@ class Processor extends React.Component {
   };
 
   setEquation = (e) => {
-    let params = this.state.params
-    params.eq = e.target.value
+    let params = this.state.params;
+    params.eq = e.target.value;
     this.setState({
       textinp1: e.target.value,
       params,
@@ -497,15 +510,19 @@ class Processor extends React.Component {
 
   validateFeatureCreation = () => {
     let params = this.state.params;
-    if (params.variables == undefined || params.variables.length == 0 || this.state.textinp1 == '')
+    if (
+      params.variables == undefined ||
+      params.variables.length == 0 ||
+      this.state.textinp1 == ""
+    )
       return false;
     let variables = params.variables;
     let validate = true;
     let vcount = 0;
     for (let i = 0; i < variables.length; i++) {
       let v = variables[i];
-      validate &&= !((v.var != '') ^ (v.col != ''));
-      vcount += v.var != ''
+      validate &&= !((v.var != "") ^ (v.col != ""));
+      vcount += v.var != "";
     }
 
     return validate && vcount != 0;
@@ -547,6 +564,9 @@ class Processor extends React.Component {
   };
 
   getGraph = () => {
+    this.setState({
+      isLoading: true
+    })
     Axios.post(
       config.routes.function,
       {
@@ -560,6 +580,9 @@ class Processor extends React.Component {
       }
     )
       .then((res) => {
+        this.setState({
+          isLoading: true
+        })
         let imgUrl = URL.createObjectURL(res.data);
         console.log(imgUrl);
         this.setState({
@@ -632,6 +655,12 @@ class Processor extends React.Component {
   };
 
   render() {
+    if (this.state.isLoading)
+      return (
+        <div style={{width: '100vw', height: '100vh'}}>
+          <Loader />
+        </div>
+      );
     return (
       this.state.title && (
         <div className="processor">
@@ -1122,9 +1151,14 @@ class Processor extends React.Component {
                                 {this.state.rows.map((row, j) => {
                                   return (
                                     <td key={j} className="item">
-                                      {this.state.data[row.title]
-                                        ? this.state.data[row.title].values[idx]
-                                        : "Loading"}
+                                      {this.state.data[row.title] ? (
+                                        this.state.data[row.title].values[idx]
+                                      ) : (
+                                        <div className="loader-data">
+                                          <span>{"{"}</span>
+                                          <span>{"}"}</span>
+                                        </div>
+                                      )}
                                     </td>
                                   );
                                 })}
