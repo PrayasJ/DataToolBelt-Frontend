@@ -1,4 +1,3 @@
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
 import { processTypes } from "./processType"
 
 let _index = process.env.NODE_ENV == "production" ? 1:0

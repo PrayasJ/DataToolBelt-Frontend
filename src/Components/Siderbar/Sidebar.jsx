@@ -1,20 +1,13 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Sidebar.scss";
 
 import logoFull from "../../Images/logo-full-white.svg";
 import logo from "../../Images/logo-white.svg";
 
-import { RiArrowDropDownLine } from "react-icons/ri";
-
 import { Scrollbars } from "react-custom-scrollbars-2";
 
 import $ from "jquery";
-import Axios from "axios";
-
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import { testColumns } from "../../test_data";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -40,6 +33,9 @@ const columns = [
   { field: "max", name: "Max" },
 ];
 
+window.document.onload = () => {
+  console.log('loaded')
+}
 $(function () {
   $(".menu").on("click", function () {
     console.log("menu clicked");

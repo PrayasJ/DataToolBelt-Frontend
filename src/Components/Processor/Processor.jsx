@@ -15,6 +15,7 @@ import {
   AiOutlineRight,
   AiOutlineArrowRight,
   AiFillDelete,
+  AiOutlineCloudDownload,
 } from "react-icons/ai";
 import { processTypes } from "../../processType";
 
@@ -72,6 +73,7 @@ class Processor extends React.Component {
       textinp1: "",
       textinp2: "",
       isLoading: true,
+      graphURL: "https://matplotlib.org/stable/_images/sphx_glr_pyplot_004.png",
     };
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
@@ -88,8 +90,8 @@ class Processor extends React.Component {
 
   getTableData = () => {
     this.setState({
-      isLoading: true
-    })
+      isLoading: true,
+    });
     Axios.get(config.routes.fetch + `/${this.state.taskId}`)
       .then((res) => {
         let rows = Object.values(res.data.col);
@@ -237,8 +239,8 @@ class Processor extends React.Component {
 
   convertData = (e) => {
     this.setState({
-      isLoading: true
-    })
+      isLoading: true,
+    });
     Axios.post(
       config.routes.function,
       {
@@ -252,8 +254,8 @@ class Processor extends React.Component {
     )
       .then((res) => {
         this.setState({
-          isLoading: false
-        })
+          isLoading: false,
+        });
         console.log(res);
         const dl = document.createElement("a");
         dl.href = window.URL.createObjectURL(res.data);
@@ -405,6 +407,15 @@ class Processor extends React.Component {
   validateHeatmap = () => {
     let params = this.state.params;
     return params.cols != undefined && params.cols.length > 1;
+  };
+
+  downloadGraph = () => {
+    const dl = document.createElement("a");
+    dl.href = this.state.graphURL;
+    dl.setAttribute("download", this.state.taskId);
+    document.body.appendChild(dl);
+    dl.click();
+    dl.parentNode.removeChild(dl);
   };
 
   //Feature Creation functions
@@ -565,8 +576,8 @@ class Processor extends React.Component {
 
   getGraph = () => {
     this.setState({
-      isLoading: true
-    })
+      isLoading: true,
+    });
     Axios.post(
       config.routes.function,
       {
@@ -581,8 +592,8 @@ class Processor extends React.Component {
     )
       .then((res) => {
         this.setState({
-          isLoading: true
-        })
+          isLoading: false,
+        });
         let imgUrl = URL.createObjectURL(res.data);
         console.log(imgUrl);
         this.setState({
@@ -657,7 +668,7 @@ class Processor extends React.Component {
   render() {
     if (this.state.isLoading)
       return (
-        <div style={{width: '100vw', height: '100vh'}}>
+        <div style={{ width: "100vw", height: "100vh" }}>
           <Loader />
         </div>
       );
@@ -1113,7 +1124,9 @@ class Processor extends React.Component {
             {/*Graph View*/}
             {this.state.graphURL && (
               <div className="graph-block">
-                <div className="graph-dl">Download</div>
+                <div className="graph-dl" onClick={this.downloadGraph}>
+                  <AiOutlineCloudDownload />
+                </div>
                 <div className="graph-container">
                   <img className="graph" src={this.state.graphURL} />
                 </div>
