@@ -128,9 +128,7 @@ function Home() {
         setLoading(false)
         console.log({ res });
         let taskId = res.data;
-        if (typeof taskId == "number") {
-          window.location.href = `/${taskId}/${featureSelected.key}`;
-        }
+        window.location.href = `/${taskId}/${featureSelected.key}`;
       })
       .catch((err) => {
         console.log({ err });
