@@ -7,6 +7,9 @@ import "./Processor.scss";
 import "../../loader.scss";
 import Loader from "../../Loader";
 import Axios from "axios";
+import Lottie from "react-lottie-player";
+
+import loading_lottie from "../../Lottie/data-load2.json";
 
 import { Scrollbars } from "react-custom-scrollbars-2";
 
@@ -73,7 +76,8 @@ class Processor extends React.Component {
       textinp1: "",
       textinp2: "",
       isLoading: true,
-      graphURL: "https://matplotlib.org/stable/_images/sphx_glr_pyplot_004.png",
+      isLoadingGraph: false,
+      graphURL: "",
     };
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
@@ -576,7 +580,7 @@ class Processor extends React.Component {
 
   getGraph = () => {
     this.setState({
-      isLoading: true,
+      isLoadingGraph: true,
     });
     Axios.post(
       config.routes.function,
@@ -592,7 +596,7 @@ class Processor extends React.Component {
     )
       .then((res) => {
         this.setState({
-          isLoading: false,
+          isLoadingGraph: false,
         });
         let imgUrl = URL.createObjectURL(res.data);
         console.log(imgUrl);
@@ -685,538 +689,558 @@ class Processor extends React.Component {
             cCount={this.getColCount}
             date={this.getDate}
           />
-          <div className="processor-main">
-            <div className="title-bar">
-              <div className="title noselect">{this.title}</div>
-              <div className="task-bar">
-                <div className="task-name noselect">TASK ID</div>
-                <div className="task-id">#{this.state.taskId}</div>
-              </div>
-            </div>
-            {!this.state.method && processTypes[this.state.type].children && (
-              <div className="method-block noselect">
-                {Object.keys(processTypes[this.state.type].children).map(
-                  (submethod, i) => {
-                    let subm =
-                      processTypes[this.state.type].children[submethod];
-                    return (
-                      <div
-                        key={i}
-                        className="submethod"
-                        onClick={() => this.openSubMethod(submethod)}
-                      >
-                        <img className="sub-icon" src={methodIcons[i]} />
-                        <div className="sub-title">{subm.title}</div>
-                        <div className="sub-desc">{subm.desc}</div>
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            )}
-            {/*Data inputs*/}
-            {/*Convert inputs*/}
-            {this.state.type == "convert" && (
-              <div className="input-block">
-                <div className="input-select">
-                  <div className="select-title">
-                    Select Datatype
-                    <Select
-                      options={config.getSupportedTypes()}
-                      onChange={this.onTypeSelect}
-                      className="selector"
-                      styles={this.selectStyles}
-                      components={{
-                        IndicatorSeparator: () => null,
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  className="submit-btn noselect clickable"
-                  onClick={this.convertData}
-                >
-                  Start Conversion
-                  <AiOutlineArrowRight />
+          <Scrollbars className='main-scrollbar'>
+            <div className="processor-main">
+              <div className="title-bar">
+                <div className="title noselect">{this.title}</div>
+                <div className="task-bar">
+                  <div className="task-name noselect">TASK ID</div>
+                  <div className="task-id">#{this.state.taskId}</div>
                 </div>
               </div>
-            )}
-            {/*Normalization Inputs*/}
-            {this.state.method == "normalization" && (
-              <div>
+              {!this.state.method && processTypes[this.state.type].children && (
+                <div className="method-block noselect">
+                  {Object.keys(processTypes[this.state.type].children).map(
+                    (submethod, i) => {
+                      let subm =
+                        processTypes[this.state.type].children[submethod];
+                      return (
+                        <div
+                          key={i}
+                          className="submethod clickable noselect"
+                          onClick={() => this.openSubMethod(submethod)}
+                        >
+                          <img className="sub-icon" src={methodIcons[i]} />
+                          <div className="sub-title">{subm.title}</div>
+                          <div className="sub-desc">{subm.desc}</div>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+              {/*Data inputs*/}
+              {/*Convert inputs*/}
+              {this.state.type == "convert" && (
                 <div className="input-block">
-                  <div
-                    className="input-col"
-                    style={{ marginLeft: "0", width: "40%" }}
-                  >
-                    <div className="input-title">Column Details</div>
-                    <div className="input-select">
-                      <div className="select-title">
-                        Column Names
-                        <Select
-                          options={this.state.rows
-                            .filter((col) => col.type != "object")
-                            .map((col) => {
-                              return {
-                                value: col.title,
-                                label: col.title,
-                              };
-                            })}
-                          onChange={this.onColSelectNormalization}
-                          className="selector"
-                          styles={this.selectStyles}
-                          components={{
-                            IndicatorSeparator: () => null,
-                          }}
-                        />
-                      </div>
+                  <div className="input-select">
+                    <div className="select-title">
+                      Select Datatype
+                      <Select
+                        options={config.getSupportedTypes()}
+                        onChange={this.onTypeSelect}
+                        className="selector"
+                        styles={this.selectStyles}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                      />
                     </div>
                   </div>
-                  <div className="input-col" style={{ marginRight: "0" }}>
-                    <div className="input-title">Range of Integers</div>
-                    <div className="input-container">
+                  <div
+                    className="submit-btn noselect clickable"
+                    onClick={this.convertData}
+                  >
+                    Start Conversion
+                    <AiOutlineArrowRight />
+                  </div>
+                </div>
+              )}
+              {/*Normalization Inputs*/}
+              {this.state.method == "normalization" && (
+                <div>
+                  <div className="input-block">
+                    <div
+                      className="input-col"
+                      style={{ marginLeft: "0", width: "40%" }}
+                    >
+                      <div className="input-title">Column Details</div>
                       <div className="input-select">
                         <div className="select-title">
-                          From
-                          <input
-                            className="text-input"
-                            value={this.state.textinp1}
-                            onChange={this.onMinSetNormalization}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="input-select"
-                        style={{ marginRight: "0" }}
-                      >
-                        <div className="select-title">
-                          To
-                          <input
-                            className="text-input"
-                            value={this.state.textinp2}
-                            onChange={this.onMaxSetNormalization}
+                          Column Names
+                          <Select
+                            options={this.state.rows
+                              .filter((col) => col.type != "object")
+                              .map((col) => {
+                                return {
+                                  value: col.title,
+                                  label: col.title,
+                                };
+                              })}
+                            onChange={this.onColSelectNormalization}
+                            className="selector"
+                            styles={this.selectStyles}
+                            components={{
+                              IndicatorSeparator: () => null,
+                            }}
                           />
                         </div>
                       </div>
                     </div>
+                    <div className="input-col" style={{ marginRight: "0" }}>
+                      <div className="input-title">Range of Integers</div>
+                      <div className="input-container">
+                        <div className="input-select">
+                          <div className="select-title">
+                            From
+                            <input
+                              className="text-input"
+                              value={this.state.textinp1}
+                              onChange={this.onMinSetNormalization}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="input-select"
+                          style={{ marginRight: "0" }}
+                        >
+                          <div className="select-title">
+                            To
+                            <input
+                              className="text-input"
+                              value={this.state.textinp2}
+                              onChange={this.onMaxSetNormalization}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                {this.validateNormalize() && (
-                  <div
-                    className="input-block"
-                    style={{ justifyContent: "end" }}
-                  >
+                  {this.validateNormalize() && (
                     <div
-                      className="submit-btn noselect clickable"
-                      style={{
-                        width: "100%",
-                        height: "3rem",
-                        maxWidth: "12rem",
-                      }}
-                      onClick={this.normalizeData}
+                      className="input-block"
+                      style={{ justifyContent: "end" }}
                     >
-                      Normalize Data
-                      <AiOutlineArrowRight />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/*Outlier Inputs*/}
-            {this.state.method == "outlier" && (
-              <div>
-                <div className="input-block">
-                  <div
-                    className="input-col"
-                    style={{ marginLeft: "0", width: "40%" }}
-                  >
-                    <div className="input-title">Column Details</div>
-                    <div className="input-select">
-                      <div className="select-title">
-                        Column Names
-                        <Select
-                          options={this.state.rows
-                            .filter((col) => col.type != "object")
-                            .map((col) => {
-                              return {
-                                value: col.title,
-                                label: col.title,
-                              };
-                            })}
-                          onChange={this.onColSelectOutlier}
-                          className="selector"
-                          styles={this.selectStyles}
-                          components={{
-                            IndicatorSeparator: () => null,
-                          }}
-                        />
+                      <div
+                        className="submit-btn noselect clickable"
+                        style={{
+                          width: "100%",
+                          height: "3rem",
+                          maxWidth: "12rem",
+                        }}
+                        onClick={this.normalizeData}
+                      >
+                        Normalize Data
+                        <AiOutlineArrowRight />
                       </div>
                     </div>
-                  </div>
-                  <div className="input-col" style={{ marginRight: "0" }}>
-                    <div className="input-title">Range of Integers</div>
-                    <div className="input-container">
+                  )}
+                </div>
+              )}
+
+              {/*Outlier Inputs*/}
+              {this.state.method == "outlier" && (
+                <div>
+                  <div className="input-block">
+                    <div
+                      className="input-col"
+                      style={{ marginLeft: "0", width: "40%" }}
+                    >
+                      <div className="input-title">Column Details</div>
                       <div className="input-select">
                         <div className="select-title">
-                          From
-                          <input
-                            className="text-input"
-                            value={this.state.textinp1}
-                            onChange={this.onMinSetOutlier}
+                          Column Names
+                          <Select
+                            options={this.state.rows
+                              .filter((col) => col.type != "object")
+                              .map((col) => {
+                                return {
+                                  value: col.title,
+                                  label: col.title,
+                                };
+                              })}
+                            onChange={this.onColSelectOutlier}
+                            className="selector"
+                            styles={this.selectStyles}
+                            components={{
+                              IndicatorSeparator: () => null,
+                            }}
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className="input-col" style={{ marginRight: "0" }}>
+                      <div className="input-title">Range of Integers</div>
+                      <div className="input-container">
+                        <div className="input-select">
+                          <div className="select-title">
+                            From
+                            <input
+                              className="text-input"
+                              value={this.state.textinp1}
+                              onChange={this.onMinSetOutlier}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="input-select"
+                          style={{ marginRight: "0" }}
+                        >
+                          <div className="select-title">
+                            To
+                            <input
+                              className="text-input"
+                              value={this.state.textinp2}
+                              onChange={this.onMaxSetOutlier}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {this.validateOutlier() && (
+                    <div
+                      className="input-block"
+                      style={{ justifyContent: "end" }}
+                    >
                       <div
-                        className="input-select"
-                        style={{ marginRight: "0" }}
+                        className="submit-btn noselect clickable"
+                        style={{
+                          width: "100%",
+                          height: "3rem",
+                          maxWidth: "12rem",
+                        }}
+                        onClick={this.handleOutlier}
                       >
+                        Handle Outliers
+                        <AiOutlineArrowRight />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/*Null Value Inputs*/}
+              {this.state.method == "null-value" && (
+                <div>
+                  <div className="input-block">
+                    <div className="input-col" style={{ marginLeft: "0" }}>
+                      <div className="input-title">Column Details</div>
+                      <div className="input-select">
                         <div className="select-title">
-                          To
-                          <input
-                            className="text-input"
-                            value={this.state.textinp2}
-                            onChange={this.onMaxSetOutlier}
+                          Column Names
+                          <Select
+                            options={this.state.rows
+                              .filter((col) => col.type != "object")
+                              .map((col) => {
+                                return {
+                                  value: col.title,
+                                  label: col.title,
+                                };
+                              })}
+                            onChange={this.onColSelectNullValue}
+                            className="selector"
+                            styles={this.selectStyles}
+                            components={{
+                              IndicatorSeparator: () => null,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="input-col" style={{ marginRight: "0" }}>
+                      <div className="input-title">Replacement Options</div>
+                      <div className="input-select">
+                        <div className="select-title">
+                          Method
+                          <Select
+                            options={config.getNullValueOperations()}
+                            onChange={this.onReplacementMethodNullValue}
+                            className="selector"
+                            styles={this.selectStyles}
+                            components={{
+                              IndicatorSeparator: () => null,
+                            }}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                {this.validateOutlier() && (
-                  <div
-                    className="input-block"
-                    style={{ justifyContent: "end" }}
-                  >
+                  {this.validateNullValue() && (
                     <div
-                      className="submit-btn noselect clickable"
-                      style={{
-                        width: "100%",
-                        height: "3rem",
-                        maxWidth: "12rem",
-                      }}
-                      onClick={this.handleOutlier}
+                      className="input-block"
+                      style={{ justifyContent: "end" }}
                     >
-                      Handle Outliers
-                      <AiOutlineArrowRight />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/*Null Value Inputs*/}
-            {this.state.method == "null-value" && (
-              <div>
-                <div className="input-block">
-                  <div className="input-col" style={{ marginLeft: "0" }}>
-                    <div className="input-title">Column Details</div>
-                    <div className="input-select">
-                      <div className="select-title">
-                        Column Names
-                        <Select
-                          options={this.state.rows
-                            .filter((col) => col.type != "object")
-                            .map((col) => {
-                              return {
-                                value: col.title,
-                                label: col.title,
-                              };
-                            })}
-                          onChange={this.onColSelectNullValue}
-                          className="selector"
-                          styles={this.selectStyles}
-                          components={{
-                            IndicatorSeparator: () => null,
-                          }}
-                        />
+                      <div
+                        className="submit-btn noselect clickable"
+                        style={{
+                          width: "100%",
+                          height: "3rem",
+                          maxWidth: "12rem",
+                        }}
+                        onClick={this.handleNullValues}
+                      >
+                        Handle Null Values
+                        <AiOutlineArrowRight />
                       </div>
                     </div>
-                  </div>
-                  <div className="input-col" style={{ marginRight: "0" }}>
-                    <div className="input-title">Replacement Options</div>
-                    <div className="input-select">
-                      <div className="select-title">
-                        Method
-                        <Select
-                          options={config.getNullValueOperations()}
-                          onChange={this.onReplacementMethodNullValue}
-                          className="selector"
-                          styles={this.selectStyles}
-                          components={{
-                            IndicatorSeparator: () => null,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
-                {this.validateNullValue() && (
-                  <div
-                    className="input-block"
-                    style={{ justifyContent: "end" }}
-                  >
-                    <div
-                      className="submit-btn noselect clickable"
-                      style={{
-                        width: "100%",
-                        height: "3rem",
-                        maxWidth: "12rem",
-                      }}
-                      onClick={this.handleNullValues}
-                    >
-                      Handle Null Values
-                      <AiOutlineArrowRight />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {/*Columnwise Inputs*/}
-            {this.state.method == "columnwise" && (
-              <div className="input-block" style={{ paddingTop: "24px" }}>
-                <div className="input-select">
-                  <div className="select-title">
-                    Column Names
-                    <Select
-                      options={this.state.rows.map((col) => {
-                        return {
-                          value: col.title,
-                          label: col.title,
-                        };
-                      })}
-                      onChange={this.onColSelectColumnwise}
-                      className="selector"
-                      styles={this.selectStyles}
-                      components={{
-                        IndicatorSeparator: () => null,
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  className="submit-btn noselect clickable"
-                  onClick={this.generateColumnwiseGraph}
-                >
-                  Generate Graph
-                  <AiOutlineArrowRight />
-                </div>
-              </div>
-            )}
-            {/*Heatmap Inputs*/}
-            {this.state.method == "heatmap" && (
-              <div className="input-block" style={{ paddingTop: "24px" }}>
-                <div className="input-select">
-                  <div className="select-title">
-                    Column Names
-                    <Select
-                      options={this.state.rows
-                        .filter((col) => col.type != "object")
-                        .map((col) => {
+              )}
+              {/*Columnwise Inputs*/}
+              {this.state.method == "columnwise" && (
+                <div className="input-block" style={{ paddingTop: "24px" }}>
+                  <div className="input-select">
+                    <div className="select-title">
+                      Column Names
+                      <Select
+                        options={this.state.rows.map((col) => {
                           return {
                             value: col.title,
                             label: col.title,
                           };
                         })}
-                      onChange={this.onMultiColSelectHeatmap}
-                      isMulti
-                      className="selector"
-                      styles={this.selectStyles}
-                      components={{
-                        IndicatorSeparator: () => null,
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  className="submit-btn noselect clickable"
-                  onClick={this.generateColHeatmap}
-                >
-                  Generate Graph
-                  <AiOutlineArrowRight />
-                </div>
-              </div>
-            )}
-            {/*Column Comparison Inputs*/}
-            {this.state.method == "column-comparison" && (
-              <div className="input-block" style={{ paddingTop: "24px" }}>
-                <div className="input-select">
-                  <div className="select-title">
-                    Column Names
-                    <Select
-                      options={this.state.rows.map((col) => {
-                        return {
-                          value: col.title,
-                          label: col.title,
-                        };
-                      })}
-                      onChange={this.onMultiColSelectComparison}
-                      isMulti
-                      className="selector"
-                      styles={this.selectStyles}
-                      components={{
-                        IndicatorSeparator: () => null,
-                      }}
-                      isOptionDisabled={(option) =>
-                        this.state.params.cols &&
-                        this.state.params.cols.length > 1
-                      }
-                    />
-                  </div>
-                </div>
-                <div
-                  className="submit-btn noselect clickable"
-                  onClick={this.generateColCompareGraph}
-                >
-                  Generate Graph
-                  <AiOutlineArrowRight />
-                </div>
-              </div>
-            )}
-            {/*Feature Creation Inputs*/}
-            {this.state.method == "feature-creation" && (
-              <div>
-                <div className="input-block">
-                  <div className="variable-block">
-                    <div className="variables">
-                      {this.state.params.variables &&
-                        this.state.params.variables.map((variable, idx) => {
-                          return this.variableObject(idx);
-                        })}
-                    </div>
-                  </div>
-                </div>
-                <div className="input-block">
-                  <div
-                    className="input-select"
-                    style={{ marginBottom: "20px" }}
-                  >
-                    <div className="select-title">
-                      Equation
-                      <input
-                        className="text-input"
-                        value={this.state.textinp1}
-                        onChange={this.setEquation}
+                        onChange={this.onColSelectColumnwise}
+                        className="selector"
+                        styles={this.selectStyles}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
                       />
                     </div>
                   </div>
-                </div>
-                <div className="input-block" style={{ height: "3rem" }}>
                   <div
                     className="submit-btn noselect clickable"
-                    style={{ marginLeft: "0" }}
-                    onClick={this.addVariable}
+                    onClick={this.generateColumnwiseGraph}
                   >
-                    Add Variables
+                    Generate Graph
+                    <AiOutlineArrowRight />
                   </div>
-                  {this.validateFeatureCreation() && (
+                </div>
+              )}
+              {/*Heatmap Inputs*/}
+              {this.state.method == "heatmap" && (
+                <div className="input-block" style={{ paddingTop: "24px" }}>
+                  <div className="input-select">
+                    <div className="select-title">
+                      Column Names
+                      <Select
+                        options={this.state.rows
+                          .filter((col) => col.type != "object")
+                          .map((col) => {
+                            return {
+                              value: col.title,
+                              label: col.title,
+                            };
+                          })}
+                        onChange={this.onMultiColSelectHeatmap}
+                        isMulti
+                        className="selector"
+                        styles={this.selectStyles}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="submit-btn noselect clickable"
+                    onClick={this.generateColHeatmap}
+                  >
+                    Generate Graph
+                    <AiOutlineArrowRight />
+                  </div>
+                </div>
+              )}
+              {/*Column Comparison Inputs*/}
+              {this.state.method == "column-comparison" && (
+                <div className="input-block" style={{ paddingTop: "24px" }}>
+                  <div className="input-select">
+                    <div className="select-title">
+                      Column Names
+                      <Select
+                        options={this.state.rows.map((col) => {
+                          return {
+                            value: col.title,
+                            label: col.title,
+                          };
+                        })}
+                        onChange={this.onMultiColSelectComparison}
+                        isMulti
+                        className="selector"
+                        styles={this.selectStyles}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
+                        isOptionDisabled={(option) =>
+                          this.state.params.cols &&
+                          this.state.params.cols.length > 1
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="submit-btn noselect clickable"
+                    onClick={this.generateColCompareGraph}
+                  >
+                    Generate Graph
+                    <AiOutlineArrowRight />
+                  </div>
+                </div>
+              )}
+              {/*Feature Creation Inputs*/}
+              {this.state.method == "feature-creation" && (
+                <div>
+                  <div className="input-block">
+                    <div className="variable-block">
+                      <div className="variables">
+                        {this.state.params.variables &&
+                          this.state.params.variables.map((variable, idx) => {
+                            return this.variableObject(idx);
+                          })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="input-block">
+                    <div
+                      className="input-select"
+                      style={{ marginBottom: "20px" }}
+                    >
+                      <div className="select-title">
+                        Equation
+                        <input
+                          className="text-input"
+                          value={this.state.textinp1}
+                          onChange={this.setEquation}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="input-block" style={{ height: "3rem" }}>
                     <div
                       className="submit-btn noselect clickable"
-                      onClick={this.handleFeatureCreation}
+                      style={{ marginLeft: "0" }}
+                      onClick={this.addVariable}
                     >
-                      Create Feature
-                      <AiOutlineArrowRight />
+                      Add Variables
                     </div>
-                  )}
+                    {this.validateFeatureCreation() && (
+                      <div
+                        className="submit-btn noselect clickable"
+                        onClick={this.handleFeatureCreation}
+                      >
+                        Create Feature
+                        <AiOutlineArrowRight />
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-            {/*Graph View*/}
-            {this.state.graphURL && (
-              <div className="graph-block">
-                <div className="graph-dl" onClick={this.downloadGraph}>
-                  <AiOutlineCloudDownload />
+              )}
+              {/*Graph View*/}
+              {this.state.isLoadingGraph && (
+                <div className="graph-block">
+                  <div className="graph-dl clickable noselect">
+                    <AiOutlineCloudDownload />
+                  </div>
+                  <div className="graph-container">
+                    <Lottie
+                      loop
+                      animationData={loading_lottie}
+                      play
+                      style={{ width: "50%" }}
+                    />
+                  </div>
                 </div>
-                <div className="graph-container">
-                  <img className="graph" src={this.state.graphURL} />
+              )}
+              {this.state.graphURL && (
+                <div className="graph-block">
+                  <div
+                    className="graph-dl clickable noselect"
+                    onClick={this.downloadGraph}
+                  >
+                    <AiOutlineCloudDownload />
+                  </div>
+                  <div className="graph-container">
+                    <img className="graph" src={this.state.graphURL} />
+                  </div>
                 </div>
-              </div>
-            )}
-            {/*Table View*/}
-            <div className="table-block">
-              <div className="title noselect">Table Overview</div>
-              <div className="table">
-                <Scrollbars className="table-container">
-                  {this.state.rows && (
-                    <table className="data-table">
-                      <thead>
-                        <tr>
-                          {this.state.rows.map((row, j) => {
-                            return (
-                              <th key={j} className="head">
-                                {row.title}
-                              </th>
-                            );
-                          })}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {rowIndexes
-                          .slice(
-                            0,
-                            this.state.page == this.state.totalpages
-                              ? Math.min(25, this.state.rowCount % 25)
-                              : 25
-                          )
-                          .map((idx) => {
-                            return (
-                              <tr key={idx}>
-                                {this.state.rows.map((row, j) => {
-                                  return (
-                                    <td key={j} className="item">
-                                      {this.state.data[row.title] ? (
-                                        this.state.data[row.title].values[idx]
-                                      ) : (
-                                        <div className="loader-data">
-                                          <span>{"{"}</span>
-                                          <span>{"}"}</span>
-                                        </div>
-                                      )}
-                                    </td>
-                                  );
-                                })}
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  )}
-                </Scrollbars>
-              </div>
-              <div className="pages noselect">
-                <div className="page-item">
-                  {`${(this.state.page - 1) * 25 + 1} - ${Math.min(
-                    this.state.page * 25,
-                    this.state.rowCount
-                  )} of ${this.state.rowCount} items`}
+              )}
+              {/*Table View*/}
+              <div className="table-block">
+                <div className="title noselect">Table Overview</div>
+                <div className="table">
+                  <Scrollbars className="table-container">
+                    {this.state.rows && (
+                      <table className="data-table">
+                        <thead>
+                          <tr>
+                            {this.state.rows.map((row, j) => {
+                              return (
+                                <th key={j} className="head">
+                                  {row.title}
+                                </th>
+                              );
+                            })}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {rowIndexes
+                            .slice(
+                              0,
+                              this.state.page == this.state.totalpages
+                                ? Math.min(25, this.state.rowCount % 25)
+                                : 25
+                            )
+                            .map((idx) => {
+                              return (
+                                <tr key={idx}>
+                                  {this.state.rows.map((row, j) => {
+                                    return (
+                                      <td key={j} className="item">
+                                        {this.state.data[row.title] ? (
+                                          this.state.data[row.title].values[idx]
+                                        ) : (
+                                          <div className="loader-data">
+                                            <span>{"{"}</span>
+                                            <span>{"}"}</span>
+                                          </div>
+                                        )}
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    )}
+                  </Scrollbars>
                 </div>
-                <div className="page-item">
-                  {this.state.page} of {this.state.totalpages} Pages
-                </div>
-                <div className="page-item page-row">
-                  <AiOutlineLeft
-                    onClick={this.onPrevPage}
-                    style={{
-                      visibility: `${
-                        this.state.page > 1 ? "visible" : "hidden"
-                      }`,
-                    }}
-                  />
-                  <div className="page-box">{this.state.page}</div>
-                  <AiOutlineRight
-                    onClick={this.onNextPage}
-                    style={{
-                      visibility: `${
-                        this.state.page < this.state.totalpages
-                          ? "visible"
-                          : "hidden"
-                      }`,
-                    }}
-                  />
+                <div className="pages noselect">
+                  <div className="page-item">
+                    {`${(this.state.page - 1) * 25 + 1} - ${Math.min(
+                      this.state.page * 25,
+                      this.state.rowCount
+                    )} of ${this.state.rowCount} items`}
+                  </div>
+                  <div className="page-item">
+                    {this.state.page} of {this.state.totalpages} Pages
+                  </div>
+                  <div className="page-item page-row">
+                    <AiOutlineLeft
+                      onClick={this.onPrevPage}
+                      style={{
+                        visibility: `${
+                          this.state.page > 1 ? "visible" : "hidden"
+                        }`,
+                      }}
+                    />
+                    <div className="page-box">{this.state.page}</div>
+                    <AiOutlineRight
+                      onClick={this.onNextPage}
+                      style={{
+                        visibility: `${
+                          this.state.page < this.state.totalpages
+                            ? "visible"
+                            : "hidden"
+                        }`,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Scrollbars>
         </div>
       )
     );

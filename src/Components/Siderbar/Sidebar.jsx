@@ -7,8 +7,6 @@ import logo from "../../Images/logo-white.svg";
 
 import { Scrollbars } from "react-custom-scrollbars-2";
 
-import $ from "jquery";
-
 import { testColumns } from "../../test_data";
 import { AiOutlineMenu } from "react-icons/ai";
 import { config } from "../../config";
@@ -23,36 +21,10 @@ testColumns.forEach((c) => {
   });
 });
 
-let operation = "avg";
-
-const columns = [
-  { field: "title", name: "Title" },
-  { field: "type", name: "Type" },
-  { field: "avg", name: "Avg" },
-  { field: "min", name: "Min" },
-  { field: "max", name: "Max" },
-];
-
-window.document.onload = () => {
-  console.log('loaded')
-}
-$(function () {
-  $(".menu").on("click", function () {
-    console.log("menu clicked");
-    $(".overlay").toggleClass("anim");
-    $(this).addClass("open");
-  });
-
-  $(".open").on("click", function () {
-    console.log("open clicked");
-    $(".overlay").toggleClass("reverse-animation");
-  });
-
-  $(".logo").on("click", function () {
-    console.log("logo clicked");
-    $(".overlay").removeClass("anim");
-  });
-});
+// console.log(document.body.querySelector('.processor-main'))
+// document.body.querySelector('.processor-main').addEventListener('click', () => {
+//   console.log('click')
+// })
 
 class Sidebar extends React.Component {
   constructor(props) {
@@ -66,10 +38,32 @@ class Sidebar extends React.Component {
       columnCount: props.cCount,
       rowCount: props.rCount,
       date: props.date,
+      sideopen: false,
+      anim: false,
     };
   }
 
+  toggleOpen = () => {
+    this.setState({
+      sideopen: !this.state.sideopen,
+      anim: !this.state.anim,
+    });
+  };
+
+  toggleClose = () => {
+    this.setState({
+      sideopen: false,
+      anim: false,
+    });
+  };
+
   render() {
+    let main = document.body.querySelector(".processor-main");
+    if (main) {
+      document.body.querySelector(".processor-main").onclick = () => {
+        this.toggleClose();
+      };
+    }
     return (
       <div>
         <header className="sidebar hide-on-med">
@@ -138,11 +132,16 @@ class Sidebar extends React.Component {
           </div>
         </header>
         <div className="wrapper show-on-med">
-          <AiOutlineMenu className="menu" />
-          <div className="overlay">
+          <AiOutlineMenu
+            className={`menu ${this.state.sideopen ? "open" : ""}`}
+            onClick={this.toggleOpen}
+          />
+          <div className={`overlay ${this.state.anim ? "anim" : ""}`}>
             <header className="sidebar">
-              <img className="logo full" src={logoFull} />
-              <img className="logo small" src={logo} />
+              <Link to={"/"}>
+                <img className="logo full" src={logoFull} />
+                <img className="logo small" src={logo} />
+              </Link>
               <div className="info-container">
                 <div className="title">File Name</div>
                 <div className="info">{this.state.title()}</div>
@@ -171,33 +170,33 @@ class Sidebar extends React.Component {
                   <Scrollbars className="table-container ag-theme-alpine">
                     {this.state.rows && (
                       <table className="data-table">
-                      <thead>
-                        <tr>
-                          {this.state.columns().map((col) => {
+                        <thead>
+                          <tr>
+                            {this.state.columns().map((col) => {
+                              return (
+                                <th key={col.field} className="head">
+                                  {col.name}
+                                </th>
+                              );
+                            })}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.state.rows().map((row, idx) => {
                             return (
-                              <th key={col.field} className="head">
-                                {col.name}
-                              </th>
+                              <tr key={idx}>
+                                {this.state.columns().map((col) => {
+                                  return (
+                                    <td key={col.field} className="item">
+                                      {row[col.field]}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
                             );
                           })}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.rows().map((row, idx) => {
-                          return (
-                            <tr key={idx}>
-                              {this.state.columns().map((col) => {
-                                return (
-                                  <td key={col.field} className="item">
-                                    {row[col.field]}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                        </tbody>
+                      </table>
                     )}
                   </Scrollbars>
                 </div>

@@ -32,8 +32,8 @@ $main-padding: 12px;
 		display: flex;
 		flex-direction: column;
 		padding: 2 * $main-padding;
-		width: 100%;
-		overflow-y: auto;
+		width: 92%;
+		//overflow-y: auto;
 		height: 90vh;
 
 		.title-bar {
@@ -183,11 +183,15 @@ $main-padding: 12px;
 				font-size: 16px;
 				line-height: 30px;
 
-				color: #4FD1C5;
+				color: colors.$green;
 				display: flex;
 				justify-content: space-evenly;
 				align-items: center;
 				
+			}
+
+			.submit-btn:hover {
+				background-color: colors.$okay-green;
 			}
 
 			.variable-block {
@@ -292,6 +296,10 @@ $main-padding: 12px;
 					color: #6F6F76;
 				}
 			}
+
+			.submethod:hover {
+				background-color: colors.$okay-green;
+			}
 		}
 
 		.graph-block {
@@ -307,6 +315,9 @@ $main-padding: 12px;
 				font-size: 2rem;	
 			}
 			.graph-container {
+				display: flex;
+				justify-content: center;
+				width: 100%;
 				.graph {
 					border-top:  colors.$light-grey;
 					border-width: 0;

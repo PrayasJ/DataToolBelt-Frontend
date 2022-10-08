@@ -26,11 +26,16 @@ $main-padding: 12px;
     background-color: colors.$cyan;
     display: flex;
     padding-top: 64px;
+    width: 100vw;
+
+    @media screen and (max-width: variables.$small) {
+      padding-top: 55px;
+    }
 
     .file-upload {
       background-color: colors.$light-grey;
       padding: 2*$main-padding;
-      width: calc(100% - 522px);
+      width: calc(100% - 550px);
       margin-bottom: 4*$main-padding;
 
       @media screen and (max-width: variables.$medium) {
