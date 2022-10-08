@@ -93,9 +93,6 @@ class Processor extends React.Component {
   }
 
   getTableData = () => {
-    this.setState({
-      isLoading: true,
-    });
     Axios.get(config.routes.fetch + `/${this.state.taskId}`)
       .then((res) => {
         let rows = Object.values(res.data.col);
@@ -133,6 +130,24 @@ class Processor extends React.Component {
       .catch((err) => {
         //show error page
       });
+  };
+
+  updateMeta = () => {
+    Axios.get(config.routes.fetch + `/${this.state.taskId}`).then((res) => {
+      let rows = Object.values(res.data.col);
+      this.setState({
+        isLoading: false,
+        title: res.data.name,
+        size: res.data.size,
+        date: res.data.dt,
+        rows,
+        columns,
+        columnCount: columns.length,
+        rowCount: res.data.rows,
+        totalpages:
+          res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25),
+      });
+    });
   };
 
   onPrevPage = () => {
@@ -689,7 +704,7 @@ class Processor extends React.Component {
             cCount={this.getColCount}
             date={this.getDate}
           />
-          <Scrollbars className='main-scrollbar'>
+          <Scrollbars className="main-scrollbar">
             <div className="processor-main">
               <div className="title-bar">
                 <div className="title noselect">{this.title}</div>
@@ -1167,7 +1182,15 @@ class Processor extends React.Component {
                             {this.state.rows.map((row, j) => {
                               return (
                                 <th key={j} className="head">
-                                  {row.title}
+                                  <DataCell
+                                    row={row}
+                                    page={this.state.page}
+                                    taskId={this.state.taskId}
+                                    updateMeta={this.updateMeta}
+                                    updateTable={this.getTableData}
+                                    value={row.title}
+                                    isHead={true}
+                                  />
                                 </th>
                               );
                             })}
@@ -1188,7 +1211,18 @@ class Processor extends React.Component {
                                     return (
                                       <td key={j} className="item">
                                         {this.state.data[row.title] ? (
-                                          this.state.data[row.title].values[idx]
+                                          <DataCell
+                                            idx={idx}
+                                            row={row}
+                                            page={this.state.page}
+                                            taskId={this.state.taskId}
+                                            updateMeta={this.updateMeta}
+                                            value={
+                                              this.state.data[row.title].values[
+                                                idx
+                                              ]
+                                            }
+                                          />
                                         ) : (
                                           <div className="loader-data">
                                             <span>{"{"}</span>
@@ -1243,6 +1277,98 @@ class Processor extends React.Component {
           </Scrollbars>
         </div>
       )
+    );
+  }
+}
+
+class DataCell extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      row: props.row,
+      idx: props.idx,
+      value: props.value,
+      taskId: props.taskId,
+      updateMeta: props.updateMeta,
+      updateTable: props.updateTable,
+      page: props.page,
+      click: false,
+      isHead: props.isHead || false,
+    };
+  }
+
+  updateVal = (e) => {
+    this.setState({
+      value: e.target.value,
+    });
+  };
+
+  updateComplete = () => {
+    this.setState({
+      click: false,
+    });
+    if(this.state.isHead) {
+      Axios.post(config.routes.updateHead, {
+        taskId: this.state.taskId,
+        col: this.state.row.title,
+        newVal: this.state.value,
+      })
+        .then((res) => {
+          this.state.updateTable();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      Axios.post(config.routes.updateCell, {
+        taskId: this.state.taskId,
+        col: this.state.row.title,
+        page: this.state.page - 1,
+        idx: this.state.idx,
+        newVal: this.state.value,
+      })
+        .then((res) => {
+          this.state.updateMeta();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    
+  };
+
+  isEnterPressed = (e) => {
+    if (e.key == "Enter") {
+      this.updateComplete();
+    }
+  };
+
+  render() {
+    return (
+      <div
+        className="data-container"
+        onDoubleClick={() => {
+          this.setState({
+            click: true,
+          });
+          console.log(this.state.click);
+        }}
+        onBlur={() => {
+          this.updateComplete();
+        }}
+      >
+        {this.state.click ? (
+          <input
+            className="data-input"
+            value={this.state.value}
+            onChange={this.updateVal}
+            autoFocus
+            onKeyDown={this.isEnterPressed}
+          />
+        ) : (
+          <div className="data-text noselect">{this.state.value}</div>
+        )}
+      </div>
     );
   }
 }

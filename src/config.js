@@ -68,5 +68,7 @@ export const config = {
 		fetch: baseUrl + 'fetch',
 		get: baseUrl + 'get',
 		function: baseUrl + 'function',
+		updateCell: baseUrl + 'update-cell',
+		updateHead: baseUrl + 'update-head',
 	}
 }

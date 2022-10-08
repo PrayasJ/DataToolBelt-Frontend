@@ -32,7 +32,7 @@ $main-padding: 12px;
 		display: flex;
 		flex-direction: column;
 		padding: 2 * $main-padding;
-		width: 92%;
+		width: calc(100% - 4 * $main-padding);
 		//overflow-y: auto;
 		height: 90vh;
 
@@ -40,7 +40,9 @@ $main-padding: 12px;
 			display: flex;
 			justify-content: space-between;
 			text-align: left;
-
+			@media screen and (max-width: variables.$medium) {
+				padding-left: 3 * $main-padding;
+			  }
 			.title {
 
 				font-family: 'Inter';
@@ -372,11 +374,38 @@ $main-padding: 12px;
 							min-width: 100px;
 							letter-spacing: -0.15px;
 							background: #F6F8FB;
-							padding-top: 0.5 * $main-padding;
-							padding-bottom: 0.5 * $main-padding;
-							padding-left: 1 * $main-padding;
 							outline: 1px solid #F1F1F1;
 
+							.data-container {
+								width: 100%;
+								margin: 0;
+								padding: 0;
+							}
+							.data-text {
+								padding-top: 0.5 * $main-padding;
+								padding-bottom: 0.5 * $main-padding;
+								padding-left: 1 * $main-padding;
+							}
+
+							.data-input {
+								width: calc(100% - $main-padding);
+								text-align: center;
+								font-family: 'Inter';
+								font-style: normal;
+								font-weight: 900;
+								font-size: 14px;
+								line-height: 150%;
+								background: #FFFFFF;
+								border: none;
+								background-color: #edf2fa;
+								padding-top: 0.5 * $main-padding;
+								padding-bottom: 0.5 * $main-padding;
+								padding-left: 1 * $main-padding;
+							}
+
+							.data-input:focus {
+								outline: none;
+							}
 						}
 
 						.item {
@@ -387,11 +416,39 @@ $main-padding: 12px;
 							line-height: 150%;
 							color: #646464;
 							background: #FFFFFF;
-							padding-top: 0.5 * $main-padding;
-							padding-bottom: 0.5 * $main-padding;
-							padding-left: 1 * $main-padding;
 							outline: 1px solid #F1F1F1;
+							
+							.data-container {
+								width: 100%;
+								margin: 0;
+								padding: 0;
+							}
+							.data-text {
+								padding-top: 0.5 * $main-padding;
+								padding-bottom: 0.5 * $main-padding;
+								padding-left: 1 * $main-padding;
+							}
 
+							.data-input {
+								width: calc(100% - $main-padding);
+								text-align: center;
+								font-family: 'Inter';
+								font-style: normal;
+								font-weight: 900;
+								font-size: 14px;
+								line-height: 150%;
+								color: #646464;
+								background: #FFFFFF;
+								border: none;
+								background-color: colors.$light-grey;
+								padding-top: 0.5 * $main-padding;
+								padding-bottom: 0.5 * $main-padding;
+								padding-left: 1 * $main-padding;
+							}
+
+							.data-input:focus {
+								outline: none;
+							}
 						}
 					}
 				}
