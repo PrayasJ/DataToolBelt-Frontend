@@ -10,6 +10,7 @@ import Axios from "axios";
 import Lottie from "react-lottie-player";
 
 import loading_lottie from "../../Lottie/data-load2.json";
+import error_lottie from "../../Lottie/error.json"
 
 import { Scrollbars } from "react-custom-scrollbars-2";
 
@@ -77,6 +78,7 @@ class Processor extends React.Component {
       textinp2: "",
       isLoading: true,
       isLoadingGraph: false,
+      isError: false,
       graphURL: "",
     };
     this.title = this.state.method
@@ -124,11 +126,17 @@ class Processor extends React.Component {
             })
             .catch((err) => {
               console.log(err);
+              this.setState({
+                isError: true
+              })
             });
         });
       })
       .catch((err) => {
         //show error page
+        this.setState({
+          isError: true
+        })
       });
   };
 
@@ -144,8 +152,10 @@ class Processor extends React.Component {
         columns,
         columnCount: columns.length,
         rowCount: res.data.rows,
-        totalpages:
-          res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25),
+        totalpages: Math.max(
+          1,
+          res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25)
+        ),
       });
     });
   };
@@ -168,6 +178,9 @@ class Processor extends React.Component {
           })
           .catch((err) => {
             console.log(err);
+            this.setState({
+              isError: true
+            })
           });
       });
       this.setState({
@@ -196,6 +209,9 @@ class Processor extends React.Component {
           })
           .catch((err) => {
             console.log(err);
+            this.setState({
+              isError: true
+            })
           });
       });
       this.setState({
@@ -285,6 +301,9 @@ class Processor extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          isError: true
+        })
       });
   };
 
@@ -621,6 +640,9 @@ class Processor extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          isError: true
+        })
       });
   };
 
@@ -636,6 +658,9 @@ class Processor extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          isError: true
+        })
       });
   };
 
@@ -684,7 +709,37 @@ class Processor extends React.Component {
     return this.state.date;
   };
 
+  delRow = (idx) => {
+    this.setState({
+      data: [],
+    });
+    Axios.post(config.routes.delRow, {
+      taskId: this.state.taskId,
+      page: this.state.page - 1,
+      idx: idx,
+    })
+      .then((res) => {
+        this.getTableData();
+      })
+      .catch((err) => {
+        console.log({ err });
+        this.setState({
+          isError: true
+        })
+      });
+  };
+
   render() {
+    if(this.state.isError) {
+      return (
+        <Lottie
+          loop
+          animationData={error_lottie}
+          play
+          style={{ height: "100vh" }}
+        />
+      )
+    }
     if (this.state.isLoading)
       return (
         <div style={{ width: "100vw", height: "100vh" }}>
@@ -1172,13 +1227,18 @@ class Processor extends React.Component {
               )}
               {/*Table View*/}
               <div className="table-block">
-                <div className="title noselect">Table Overview</div>
+                <div className="title noselect">
+                  Table Overview{" "}
+                  <div className="table-info">Double click cells to edit</div>
+                </div>
+
                 <div className="table">
                   <Scrollbars className="table-container">
                     {this.state.rows && (
                       <table className="data-table">
                         <thead>
                           <tr>
+                            <th></th>
                             {this.state.rows.map((row, j) => {
                               return (
                                 <th key={j} className="head">
@@ -1207,6 +1267,14 @@ class Processor extends React.Component {
                             .map((idx) => {
                               return (
                                 <tr key={idx}>
+                                  <td
+                                    className="item"
+                                    onClick={() => {
+                                      this.delRow(idx);
+                                    }}
+                                  >
+                                    <AiFillDelete className="row-del clickable noselect" />
+                                  </td>
                                   {this.state.rows.map((row, j) => {
                                     return (
                                       <td key={j} className="item">
@@ -1240,6 +1308,7 @@ class Processor extends React.Component {
                     )}
                   </Scrollbars>
                 </div>
+
                 <div className="pages noselect">
                   <div className="page-item">
                     {`${(this.state.page - 1) * 25 + 1} - ${Math.min(
@@ -1307,7 +1376,8 @@ class DataCell extends React.Component {
     this.setState({
       click: false,
     });
-    if(this.state.isHead) {
+
+    if (this.state.isHead) {
       Axios.post(config.routes.updateHead, {
         taskId: this.state.taskId,
         col: this.state.row.title,
@@ -1334,7 +1404,19 @@ class DataCell extends React.Component {
           console.log(err);
         });
     }
-    
+  };
+
+  delCol = () => {
+    Axios.post(config.routes.delCol, {
+      taskId: this.state.taskId,
+      col: this.state.row.title,
+    })
+      .then((res) => {
+        this.state.updateTable();
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
   };
 
   isEnterPressed = (e) => {
@@ -1358,7 +1440,7 @@ class DataCell extends React.Component {
         }}
       >
         {this.state.click ? (
-          <input
+          <textarea
             className="data-input"
             value={this.state.value}
             onChange={this.updateVal}
@@ -1367,6 +1449,12 @@ class DataCell extends React.Component {
           />
         ) : (
           <div className="data-text noselect">{this.state.value}</div>
+        )}
+        {!this.state.click && this.state.isHead && (
+          <AiFillDelete
+            onClick={this.delCol}
+            className="col-del clickable noselect"
+          />
         )}
       </div>
     );

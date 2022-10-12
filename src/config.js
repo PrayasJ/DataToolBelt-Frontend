@@ -70,5 +70,7 @@ export const config = {
 		function: baseUrl + 'function',
 		updateCell: baseUrl + 'update-cell',
 		updateHead: baseUrl + 'update-head',
+		delRow: baseUrl + 'del-row',
+		delCol: baseUrl + 'del-col',
 	}
 }
