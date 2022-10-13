@@ -118,14 +118,14 @@ function Home() {
     if (file == undefined) return;
     let formData = new FormData();
     formData.append("file", file);
-    setLoading(true)
+    setLoading(true);
     Axios.post(config.routes.upload, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     })
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         console.log({ res });
         let taskId = res.data;
         window.location.href = `/${taskId}/${featureSelected.key}`;
@@ -142,7 +142,16 @@ function Home() {
   const [featureSelected, setFeature] = useState<Features>(features[4]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "text/csv": [".csv"],
+      "text/xml": [".xml"],
+      "application/xml": [".xml"],
+      "application/json": [".json"],
+    },
+    maxFiles:1
+  });
 
   if (isLoading)
     return (
