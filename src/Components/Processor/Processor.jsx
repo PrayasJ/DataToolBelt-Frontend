@@ -108,7 +108,7 @@ class Processor extends React.Component {
           columnCount: columns.length,
           rowCount: res.data.rows,
           totalpages:
-            res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25),
+            (res.data.rows % 25 == 0 ? 0 : 1) + Math.floor(res.data.rows / 25),
         });
 
         rows.map((row) => {
@@ -154,7 +154,7 @@ class Processor extends React.Component {
         rowCount: res.data.rows,
         totalpages: Math.max(
           1,
-          res.data.rows % 25 == 0 ? 0 : 1 + Math.floor(res.data.rows / 25)
+          (res.data.rows % 25 == 0 ? 0 : 1) + Math.floor(res.data.rows / 25)
         ),
       });
     });
