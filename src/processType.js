@@ -1,6 +1,7 @@
 export const processTypes = {
 	'cleaning': {
 		title: 'Data Cleaning',
+		desc: 'Data Cleaning processes such as Normalization, Outlier Removal and Null Value Handling.',
 		children: {
 			'normalization': {
 				title: 'Data Normalization',
@@ -18,6 +19,7 @@ export const processTypes = {
 	},
 	'visualization': {
 		title: 'Data Visualization',
+		desc: 'Data Visualization processes such as Columnwise Representation, Heatmap Creation and Column Comparison.',
 		children: {
 			'columnwise' : {
 				title: 'Columnwise Representation',
@@ -35,6 +37,7 @@ export const processTypes = {
 	},
 	'processing': {
 		title: 'Data Processing',
+		desc: 'Data Processing Methods such as Feature Creation, Data Classification, Feature Reduction and Clustering.',
 		children: {
 			'feature-creation' : {
 				title: 'Feature Creation',
@@ -56,10 +59,7 @@ export const processTypes = {
 	},
 	'convert': {
 		title: 'Data Conversion',
-		children: {}
-	},
-	'analyze': {
-		title: 'Data Analysis',
-		children: {}
+		children: {},
+		desc: 'Data Conversion Methods to convert and download the data.',
 	}
 }

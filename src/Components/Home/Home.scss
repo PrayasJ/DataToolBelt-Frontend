@@ -22,11 +22,13 @@ $main-padding: 12px;
 
 .Home {
 
+  overflow-x: hidden;
   .infographic {
     background-color: colors.$cyan;
     display: flex;
     padding-top: 64px;
     width: 100vw;
+    flex-wrap: wrap;
 
     @media screen and (max-width: variables.$small) {
       padding-top: 55px;
@@ -180,6 +182,56 @@ $main-padding: 12px;
         font-size: 12px;
         line-height: 18px;
         cursor: pointer;
+      }
+    }
+
+    .task-ids {
+      display: flex;
+      flex-direction: column;
+      padding-right: $main-padding;
+      width: 400px;
+      padding-top: 1*$main-padding;
+      background-color: colors.$light-grey;
+      margin-bottom: 4 * $main-padding;
+      margin-left: 4 * $main-padding;
+      margin-top: 4 * $main-padding;
+      border-radius: 6px;
+      @media screen and (max-width: variables.$medium) {
+        width: calc(100% - 6 * $main-padding);
+        margin: $main-padding;
+        padding: $main-padding;
+        margin-left: 1.25 * $main-padding;
+      }
+
+      .task-text {
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 22px;
+        text-align: left;
+        margin-top: 0.5 * $main-padding;
+        margin-left: $main-padding;
+      }
+
+      .task-id {
+        font-family: 'Poppins';
+        color: colors.$black;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 22px;
+        text-align: left;
+        width: 91%;
+        text-decoration: none;
+        margin: $main-padding;
+        padding: $main-padding;
+        border-radius: 4px;
+        cursor: pointer;
+        box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.06);
+        background-color: colors.$okay-green;
+      }
+
+      .task-id:hover {
+        background-color: colors.$green;
       }
     }
 

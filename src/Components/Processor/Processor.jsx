@@ -84,14 +84,17 @@ class Processor extends React.Component {
     this.title = this.state.method
       ? config.getSubTitle(this.state.type, this.state.method)
       : config.getTitle(this.state.type);
+    if(!this.state.method && !this.title) this.title = 'Home'
     if (this.title == undefined) {
       window.location.href = "/";
     }
 
     document.title = this.title + " - DataToolBelt";
     this.getTableData();
-    this.addVariable();
-    this.addVariable();
+    if(this.state.method == 'feature-creation') {
+      this.addVariable();
+      this.addVariable();
+    }
   }
 
   getTableData = () => {
@@ -105,7 +108,7 @@ class Processor extends React.Component {
           date: res.data.dt,
           rows,
           columns,
-          columnCount: columns.length,
+          columnCount: res.data.col.length,
           rowCount: res.data.rows,
           totalpages:
             (res.data.rows % 25 == 0 ? 0 : 1) + Math.floor(res.data.rows / 25),
@@ -150,7 +153,7 @@ class Processor extends React.Component {
         date: res.data.dt,
         rows,
         columns,
-        columnCount: columns.length,
+        columnCount: res.data.col.length,
         rowCount: res.data.rows,
         totalpages: Math.max(
           1,
@@ -221,6 +224,29 @@ class Processor extends React.Component {
     }
   };
 
+  openMethod = (method) => {
+    window.history.pushState(
+      null,
+      document.title,
+      `/${this.state.taskId}/${method}`
+    )
+    this.setState({
+      type: method,
+      method: undefined,
+      params: {},
+      textinp1: '',
+      textinp2: '',
+    })
+    window.onpopstate = this.removeMethod
+
+    this.title = config.getTitle(method)
+    if(this.title == undefined) {
+      window.location.href = '/';
+    }
+    document.title = this.title + " - DataToolBelt";
+    this.getTableData();
+  }
+
   openSubMethod = (sub) => {
     window.history.pushState(
       null,
@@ -242,12 +268,25 @@ class Processor extends React.Component {
 
     document.title = this.title + " - DataToolBelt";
     this.getTableData();
-    this.addVariable();
-    this.addVariable();
+    if(sub == 'feature-creation') {
+      this.addVariable();
+      this.addVariable();
+    }
   };
+
+  removeMethod = () => {
+    this.setState({
+      type: undefined,
+    })
+
+    document.tite = "Home - DataToolBelt"
+    this.getTableData()
+    window.onpopstate = () => {}
+  }
 
   removeSubMethod = () => {
     this.setState({
+      params: {},
       method: undefined,
       graphURL: undefined,
     });
@@ -259,7 +298,7 @@ class Processor extends React.Component {
 
     document.title = this.title + " - DataToolBelt";
     this.getTableData();
-    window.onpopstate = () => {};
+    window.onpopstate = this.removeMethod;
   };
 
   //For convert type
@@ -768,7 +807,28 @@ class Processor extends React.Component {
                   <div className="task-id">#{this.state.taskId}</div>
                 </div>
               </div>
-              {!this.state.method && processTypes[this.state.type].children && (
+              {!this.state.type && (
+                <div className="method-block noselect">
+                {Object.keys(processTypes).map(
+                  (method, i) => {
+                    let m =
+                      processTypes[method];
+                    return (
+                      <div
+                        key={i}
+                        className="submethod clickable noselect"
+                        onClick={() => this.openMethod(method)}
+                      >
+                        <img className="sub-icon" src={methodIcons[i]} />
+                        <div className="sub-title">{m.title}</div>
+                        <div className="sub-desc">{m.desc}</div>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+              )}
+              {this.state.type && !this.state.method && processTypes[this.state.type].children && (
                 <div className="method-block noselect">
                   {Object.keys(processTypes[this.state.type].children).map(
                     (submethod, i) => {

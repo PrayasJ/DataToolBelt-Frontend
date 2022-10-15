@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./Home.scss";
 import Select from "react-select";
 import info from "../../Images/info.png";
@@ -21,6 +21,9 @@ import { config } from "../../config";
 
 import Loader from "../../Loader";
 
+import Cookies from "universal-cookie";
+import { Link } from "react-router-dom";
+const cookies = new Cookies();
 //Features on our platform with their image links
 
 interface Features {
@@ -50,12 +53,6 @@ const features: Features[] = [
     src: clean,
   },
   {
-    name: "Analysis",
-    key: "analyze",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
-    src: analyze,
-  },
-  {
     name: "Visualize",
     key: "visualization",
     desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
@@ -68,6 +65,8 @@ interface Steps {
   title: string;
   text: string;
 }
+
+const taskNames = new Map<string, string>()
 
 const steps: Steps[] = [
   {
@@ -111,7 +110,7 @@ function Home() {
   //Validate Inputs
 
   const validateInputs = () => {
-    return featureSelected && file;
+    return file != undefined;
   };
 
   const onSubmitPress = () => {
@@ -127,8 +126,16 @@ function Home() {
       .then((res) => {
         setLoading(false);
         console.log({ res });
-        let taskId = res.data;
-        window.location.href = `/${taskId}/${featureSelected.key}`;
+        let taskId: string = res.data;
+        let newTaskIds = taskIds || [];
+        newTaskIds.push(taskId);
+        setTaskIds(newTaskIds);
+        cookies.set("taskIds", newTaskIds, { path: "/" });
+        if (featureSelected) {
+          window.location.href = `/${taskId}/${featureSelected.key}`;
+        } else {
+          window.location.href = `/${taskId}`;
+        }
       })
       .catch((err) => {
         console.log({ err });
@@ -138,7 +145,39 @@ function Home() {
 
   //Variable declaration
 
+  const removeAndSetTaskIds = async () => {
+    let oldIds = cookies.get("taskIds") || [];
+    let ids: string[] = [];
+    for (let i in oldIds) {
+      let isValid = await isValidTaskId(oldIds[i]);
+      if (isValid) {
+        ids.push(oldIds[i]);
+      }
+    }
+    cookies.set("taskIds", ids, { path: "/" });
+    console.log({ taskIds: ids });
+    setTaskIds(ids);
+  };
+
+  const isValidTaskId = (id: string) => {
+    return new Promise((resolve, reject) => {
+      Axios.get(config.routes.fetch + `/${id}`)
+        .then((res) => {
+          taskNames.set(id, res.data.name)
+          resolve(true);
+        })
+        .catch((err) => {
+          resolve(false);
+        });
+    });
+  };
+
+  useEffect(() => {
+    if (!taskIds) removeAndSetTaskIds();
+  });
+
   const [file, setFiles] = useState<File>();
+  const [taskIds, setTaskIds] = useState<string[]>();
   const [featureSelected, setFeature] = useState<Features>(features[4]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -150,7 +189,7 @@ function Home() {
       "application/xml": [".xml"],
       "application/json": [".json"],
     },
-    maxFiles:1
+    maxFiles: 1,
   });
 
   if (isLoading)
@@ -217,9 +256,20 @@ function Home() {
             <a className="blue">Privacy Policy</a>.
           </div>
         </div>
-        <div className="info">
-          <img width="400px" className="text" src={info} />
-        </div>
+        {taskIds && taskIds.length > 0 ? (
+          <div className="task-ids">
+            <div className="task-text">Previous Sessions</div>
+            {taskIds.map(id => {
+              return (
+                <Link to={'/' + id} className="task-id">{`${id} - ${taskNames.get(id)}`}</Link>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="info">
+            <img width="400px" className="text" src={info} />
+          </div>
+        )}
       </div>
       <div className="process">
         <div className="title">The process we follow</div>
