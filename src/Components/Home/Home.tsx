@@ -35,27 +35,27 @@ interface Features {
 
 const features: Features[] = [
   {
-    name: "Convert",
-    key: "convert",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
+    name: "Data Conversion",
+    key: "Data Conversion",
+    desc: "Convert different formats of data into one other.",
     src: convert,
   },
   {
-    name: "Algorithm",
-    key: "processing",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
+    name: "Data Cleaning",
+    key: "Data Cleaning",
+    desc: "Cleaning the data becomes way more easy with features like, Null Value Handling, Outlier Handling, etc",
     src: algo,
   },
   {
-    name: "Clean",
-    key: "cleaning",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
+    name: "Data Visualization",
+    key: "Data Visualization",
+    desc: "Helps you to visualize your data with features like, Pie chart creation, Column Representation, Heatmap Generation, etc.",
     src: clean,
   },
   {
-    name: "Visualize",
-    key: "visualization",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed erat nibh tristique ipsum.",
+    name: "Data Processing",
+    key: "Data Processing",
+    desc: "Process the data via clustering, PCA, etc .",
     src: visualize,
   },
 ];
@@ -70,20 +70,20 @@ const taskNames = new Map<string, string>()
 
 const steps: Steps[] = [
   {
-    title: "Ideate",
-    text: "Turn your idea from concept to MVP",
+    title: "Upload",
+    text: "You upload your file to our servers",
   },
   {
-    title: "Ideate",
-    text: "Turn your idea from concept to MVP",
+    title: "Data Conversion",
+    text: "We convert your data into something desired.",
   },
   {
-    title: "Ideate",
-    text: "Turn your idea from concept to MVP",
+    title: "Processing/Visualization/cleaning",
+    text: "Anything you want, you can have it here with a click.",
   },
   {
-    title: "Ideate",
-    text: "Turn your idea from concept to MVP",
+    title: "Download",
+    text: "Your result is available to download for free.",
   },
 ];
 
