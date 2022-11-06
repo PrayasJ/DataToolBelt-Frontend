@@ -36,25 +36,25 @@ interface Features {
 const features: Features[] = [
   {
     name: "Data Conversion",
-    key: "Data Conversion",
+    key: "convert",
     desc: "Convert different formats of data into one other.",
     src: convert,
   },
   {
     name: "Data Cleaning",
-    key: "Data Cleaning",
+    key: "cleaning",
     desc: "Cleaning the data becomes way more easy with features like, Null Value Handling, Outlier Handling, etc",
     src: algo,
   },
   {
     name: "Data Visualization",
-    key: "Data Visualization",
+    key: "visualization",
     desc: "Helps you to visualize your data with features like, Pie chart creation, Column Representation, Heatmap Generation, etc.",
     src: clean,
   },
   {
     name: "Data Processing",
-    key: "Data Processing",
+    key: "processing",
     desc: "Process the data via clustering, PCA, etc .",
     src: visualize,
   },

@@ -98,6 +98,9 @@ class Processor extends React.Component {
   }
 
   getTableData = () => {
+    this.setState({
+      isLoading: true
+    })
     Axios.get(config.routes.fetch + `/${this.state.taskId}`)
       .then((res) => {
         let rows = Object.values(res.data.col);
@@ -144,6 +147,9 @@ class Processor extends React.Component {
   };
 
   updateMeta = () => {
+    this.setState({
+      isLoading: true
+    })
     Axios.get(config.routes.fetch + `/${this.state.taskId}`).then((res) => {
       let rows = Object.values(res.data.col);
       this.setState({
@@ -1444,6 +1450,7 @@ class DataCell extends React.Component {
         newVal: this.state.value,
       })
         .then((res) => {
+          this.state.updateMeta();
           this.state.updateTable();
         })
         .catch((err) => {
@@ -1472,7 +1479,7 @@ class DataCell extends React.Component {
       col: this.state.row.title,
     })
       .then((res) => {
-        this.state.updateTable();
+        this.state.updateMeta();
       })
       .catch((err) => {
         console.log({ err });
